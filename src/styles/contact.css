@@ -397,7 +397,85 @@ body::before {
   flex-shrink: 0;
   margin-top: 3px;
 }
+/* Custom Themed Map Pinpoint Overlay */
+.custom-theme-pinpoint {
+  position: absolute;
+  top: calc(50% - 13px);
+  left: 50%;
+  transform: translate(-50%, -100%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+}
 
+.pinpoint-pulse {
+  position: absolute;
+  bottom: 0;
+  width: 28px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(29, 209, 161, 0.2);
+  border: 1.5px solid var(--accent-glow);
+  transform: scale(1);
+  animation: pinpointPulse 2s infinite ease-out;
+  pointer-events: none;
+  z-index: -1;
+}
+
+@keyframes pinpointPulse {
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.pinpoint-icon {
+  color: var(--accent-glow);
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
+  transition: transform 0.2s ease;
+}
+
+.custom-theme-pinpoint:hover .pinpoint-icon {
+  transform: scale(1.15) translateY(-2px);
+}
+
+.pinpoint-label {
+  position: absolute;
+  bottom: 125%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(17, 23, 20, 0.95);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+  padding: 8px 14px;
+  border-radius: 10px;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+  display: none;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 20;
+  text-align: center;
+}
+
+.pinpoint-label h4 {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-color);
+  margin-bottom: 2px;
+}
+
+.pinpoint-label p {
+  font-size: 11px;
+  color: var(--text-muted);
+}
 
 /* Right Column Form */
 .contact-form-card {

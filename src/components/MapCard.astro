@@ -10,9 +10,9 @@ const {
 } = Astro.props;
 ---
 <div class="map-card" style={`height: ${height};`}>
-  <!-- Official Pinpointed Iframe Map -->
+  <!-- Clean Centered Iframe Map -->
   <iframe 
-    src="https://maps.google.com/maps?q=13.0322541,80.1807376(SRM+Institute+of+Science+and+Technology+Ramapuram)&z=16&output=embed" 
+    src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d3886.972304909838!2d80.17812167579737!3d13.037416313437142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5m2!1sen!2sin" 
     width="100%" 
     height="100%" 
     style="border:0; filter: invert(0.9) hue-rotate(180deg) contrast(1.2) brightness(0.9); opacity: 0.85;" 
@@ -20,6 +20,22 @@ const {
     loading="lazy" 
     referrerpolicy="no-referrer-when-downgrade"
   ></iframe>
+
+  <!-- Custom Themed Pinpoint Marker Overlay -->
+  <div class="custom-theme-pinpoint" id="custom-map-pin">
+    <div class="pinpoint-pulse"></div>
+    <div class="pinpoint-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
+      </svg>
+    </div>
+    
+    <!-- GSAP Animated Place Label -->
+    <div class="pinpoint-label" id="pinpoint-label">
+      <h4>SRM IST</h4>
+      <p>Ramapuram Campus</p>
+    </div>
+  </div>
 </div>
 
 {address && (
