@@ -255,7 +255,7 @@ body::before {
 }
 
 .left-col {
-  padding-top: 40px;
+  padding-top: 0;
   display: flex;
   flex-direction: column;
 }
@@ -265,23 +265,16 @@ body::before {
   flex-direction: column;
 }
 
-/* Desktop only: cap left column to match form card height exactly */
+/* Desktop only: Symmetrical layout rules */
 @media (min-width: 1024px) {
   .left-col {
-    position: relative;
-    padding-top: 0;
-    overflow: hidden;
+    overflow: visible;
   }
   .contact-socials-row {
-    position: absolute;
-    top: 24px;
-    left: 24px;
-    margin-bottom: 0;
-    z-index: 20;
+    margin-bottom: 28px;
   }
-  /* Address block is redundant on desktop — pin already links to maps */
   .map-address-block {
-    display: none;
+    display: flex;
   }
 }
 
@@ -557,6 +550,9 @@ body::before {
   position: relative;
   overflow: hidden;
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .form-group {
