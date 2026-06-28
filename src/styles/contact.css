@@ -402,7 +402,7 @@ body::before {
   position: absolute;
   top: calc(50% + 13px);
   left: 50%;
-  transform: translate(-50%, -100%);
+  transform: translate(-50%, -50%);
   z-index: 10;
   display: flex;
   flex-direction: column;
@@ -410,13 +410,38 @@ body::before {
   cursor: pointer;
 }
 
+.pinpoint-glass-shield {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.08'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+  background-color: rgba(17, 23, 20, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.25s;
+}
+
+.custom-theme-pinpoint:hover .pinpoint-glass-shield {
+  transform: scale(1.1);
+  border-color: var(--accent-glow);
+}
+
 .pinpoint-pulse {
   position: absolute;
-  bottom: 0;
-  width: 28px;
-  height: 10px;
+  top: -1px;
+  left: -1px;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-  background: rgba(29, 209, 161, 0.2);
+  background: rgba(29, 209, 161, 0.15);
   border: 1.5px solid var(--accent-glow);
   transform: scale(1);
   animation: pinpointPulse 2s infinite ease-out;
@@ -426,11 +451,11 @@ body::before {
 
 @keyframes pinpointPulse {
   0% {
-    transform: scale(0.5);
+    transform: scale(0.9);
     opacity: 1;
   }
   100% {
-    transform: scale(2.2);
+    transform: scale(1.5);
     opacity: 0;
   }
 }
@@ -438,16 +463,14 @@ body::before {
 .pinpoint-icon {
   color: var(--accent-glow);
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.5));
-  transition: transform 0.2s ease;
-}
-
-.custom-theme-pinpoint:hover .pinpoint-icon {
-  transform: scale(1.15) translateY(-2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .pinpoint-label {
   position: absolute;
-  bottom: 125%;
+  bottom: 120%;
   left: 50%;
   transform: translateX(-50%);
   background: rgba(17, 23, 20, 0.95);
