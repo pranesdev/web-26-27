@@ -1,11 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
-const BASE_FACTOR = 3887.355107080536;
+const BASE_FACTOR = 3887.053672855942;
 const BASE_ZOOM   = 0;
 
 function buildSrc(zoom: number) {
   const factor = BASE_FACTOR / Math.pow(2, zoom);
-  return `https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d${factor}!2d80.1770955!3d13.0396001!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1sen!2sin!4v1719614400000!5m2!1sen!2sin`;
+  return `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d${factor}!2d80.17816267507753!3d13.032254087288711!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5266d11f9ca625%3A0xf77d1733be7b5b74!2sSRM%20Institute%20Of%20Science%20And%20Technology!5e0!3m2!1sen!2sin!4v1782686145388!5m2!1sen!2sin`;
 }
 
 export default function MapCard() {
