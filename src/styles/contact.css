@@ -405,8 +405,14 @@ textarea.form-input:not(:placeholder-shown) ~ .form-label {
   border: none;
   cursor: pointer;
   color: #fff;
-  display: flex;
+  display: none;
   align-items: center;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
 }
 
 .mobile-menu-drawer {
