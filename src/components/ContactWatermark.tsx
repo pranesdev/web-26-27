@@ -43,24 +43,24 @@ export default function ContactWatermark() {
         @keyframes watermarkDreamyGlow {
           0% {
             filter: 
-              drop-shadow(0 0 6px rgba(29, 209, 161, 0.22)) 
-              drop-shadow(0 0 15px rgba(29, 209, 161, 0.12))
-              drop-shadow(0 0 40px rgba(0, 242, 254, 0.06))
-              drop-shadow(0 0 70px rgba(0, 242, 254, 0.02));
+              drop-shadow(0 0 15px rgba(29, 209, 161, 0.18)) 
+              drop-shadow(0 0 40px rgba(29, 209, 161, 0.10))
+              drop-shadow(0 0 90px rgba(0, 242, 254, 0.06))
+              drop-shadow(0 0 160px rgba(0, 242, 254, 0.03));
           }
           50% {
             filter: 
-              drop-shadow(0 0 12px rgba(29, 209, 161, 0.42)) 
-              drop-shadow(0 0 30px rgba(29, 209, 161, 0.25))
-              drop-shadow(0 0 65px rgba(0, 242, 254, 0.18))
-              drop-shadow(0 0 110px rgba(0, 242, 254, 0.08));
+              drop-shadow(0 0 25px rgba(29, 209, 161, 0.30)) 
+              drop-shadow(0 0 60px rgba(29, 209, 161, 0.18))
+              drop-shadow(0 0 120px rgba(0, 242, 254, 0.12))
+              drop-shadow(0 0 200px rgba(0, 242, 254, 0.06));
           }
           100% {
             filter: 
-              drop-shadow(0 0 6px rgba(29, 209, 161, 0.22)) 
-              drop-shadow(0 0 15px rgba(29, 209, 161, 0.12))
-              drop-shadow(0 0 40px rgba(0, 242, 254, 0.06))
-              drop-shadow(0 0 70px rgba(0, 242, 254, 0.02));
+              drop-shadow(0 0 15px rgba(29, 209, 161, 0.18)) 
+              drop-shadow(0 0 40px rgba(29, 209, 161, 0.10))
+              drop-shadow(0 0 90px rgba(0, 242, 254, 0.06))
+              drop-shadow(0 0 160px rgba(0, 242, 254, 0.03));
           }
         }
       `}</style>
