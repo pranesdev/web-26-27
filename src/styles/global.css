@@ -93,8 +93,7 @@ body::-webkit-scrollbar {
 
 body {
   font-family: var(--font-primary);
-  background: radial-gradient(circle at 50% 0%, #061f22 0%, #030d0f 100%) no-repeat;
-  background-attachment: fixed;
+  background-color: var(--bg-primary);
   color: var(--text-muted);
   line-height: 1.6;
   overflow-x: hidden;
