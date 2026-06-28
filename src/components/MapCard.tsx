@@ -22,11 +22,11 @@ export default function MapCard() {
           border: 0,
           filter: 'invert(0.9) hue-rotate(180deg) contrast(1.2) brightness(0.9)',
           opacity: 0.85,
-          width:  'calc(100% + 140px)',
-          height: 'calc(100% + 140px)',
+          width:  'calc(100% + 300px)',
+          height: 'calc(100% + 300px)',
           position: 'absolute',
-          top: '-70px',
-          left: '-70px',
+          top: '-150px',
+          left: '-150px',
         }}
         allowFullScreen
         loading="lazy"
