@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import img1 from '../public/i1.png';
 import img2 from '../public/i2.png';
-import img3 from '../public/i3.png';
 
 export default function ContactArtCutouts() {
   const [mouse, setMouse] = useState({ x: 0, y: 0 });
@@ -46,16 +45,6 @@ export default function ContactArtCutouts() {
         }}
       >
         <img src={getSrc(img2)} alt="Renaissance Art Cutout 2" className="art-cutout" />
-      </div>
-
-      {/* Cutout 3: Surprised (Top-Right floating) */}
-      <div
-        className="art-cutout-wrap cutout-3"
-        style={{
-          transform: `translate3d(${mouse.x * -15}px, ${mouse.y * 20}px, 0) rotate(12deg)`,
-        }}
-      >
-        <img src={getSrc(img3)} alt="Renaissance Art Cutout 3" className="art-cutout" />
       </div>
     </div>
   );
