@@ -8,7 +8,7 @@
   --text-muted: #6b7b72;
   --accent-color: #1a5c45;
   --accent-glow: #1dd1a1;
-  --card-bg: #111714;
+  --card-bg: rgba(17, 23, 20, 0.82);
   --input-bg: #0e1310;
   --font-body: 'Inter', sans-serif;
 }
@@ -45,7 +45,7 @@ body::before {
 /* Watermark */
 .contact-watermark {
   position: absolute;
-  top: 35px;
+  top: 90px;
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Inter', sans-serif;
@@ -250,6 +250,9 @@ body::before {
   grid-template-columns: 1fr;
   gap: 36px;
 }
+.contact-container[data-device-type="mobile"] .contact-watermark {
+  top: 60px;
+}
 
 .contact-container[data-device-type="tablet"] {
   padding-top: 130px;
@@ -259,10 +262,16 @@ body::before {
   grid-template-columns: 1fr;
   gap: 48px;
 }
+.contact-container[data-device-type="tablet"] .contact-watermark {
+  top: 75px;
+}
 
 .contact-container[data-device-type="desktop"] {
   padding-top: 160px;
   padding-bottom: 80px;
+}
+.contact-container[data-device-type="desktop"] .contact-watermark {
+  top: 90px;
 }
 
 /* Left Column Info */
@@ -299,6 +308,8 @@ body::before {
 /* Contact Info Cards */
 .contact-info-card {
   background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(232, 237, 233, 0.04);
   border-radius: 16px;
   padding: 18px 20px;
@@ -364,6 +375,8 @@ body::before {
 /* Right Column Form */
 .contact-form-card {
   background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(232, 237, 233, 0.04);
   border-radius: 20px;
   padding: 40px;
