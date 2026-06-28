@@ -3,6 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SocialIconBtn from '../components/SocialIconBtn.tsx';
 import MapCard from '../components/MapCard.tsx';
 import ContactFormCard from '../components/ContactFormCard.tsx';
+import ContactWatermark from '../components/ContactWatermark.tsx';
 import '../styles/contact.css';
 ---
 
@@ -84,8 +85,8 @@ import '../styles/contact.css';
 
 
   <main class="contact-container">
-    <!-- Decorative Background Watermark -->
-    <div class="contact-watermark">Contact</div>
+    <!-- Decorative Background Watermark (Interactive React Island) -->
+    <ContactWatermark client:load />
 
     <div class="contact-grid">
       <section class="left-col">
