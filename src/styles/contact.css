@@ -46,12 +46,13 @@ body::before {
 /* Watermark */
 .contact-watermark {
   position: absolute;
-  top: 90px;
+  top: var(--watermark-offset);
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Inter', sans-serif;
   font-weight: 900;
-  font-size: clamp(4.5rem, 15vw, 11rem);
+  font-size: var(--watermark-size);
+  line-height: 1;
   letter-spacing: -0.04em;
   pointer-events: none;
   z-index: 0;
@@ -222,9 +223,13 @@ body::before {
 
 /* Flex Layout on Container */
 .contact-container {
+  --watermark-size: clamp(4.5rem, 15vw, 11rem);
+  --watermark-offset: 110px;
+  
   max-width: 1000px;
   margin: 0 auto;
-  padding: 160px 24px 80px;
+  padding-top: calc(var(--watermark-offset) + var(--watermark-size) / 2) !important;
+  padding-bottom: 80px;
   position: relative;
   z-index: 10;
   min-height: 100vh;
@@ -235,47 +240,48 @@ body::before {
 }
 
 .contact-grid {
-  display: grid;
-  grid-template-columns: 0.9fr 1.1fr;
+  display: flex;
+  flex-direction: row;
   gap: 64px;
-  align-items: start;
+  align-items: flex-start;
   width: 100%;
 }
 
-/* Dynamic device layout scaling based on window resolution detector */
-.contact-container[data-device-type="mobile"] {
-  padding-top: 100px;
-  padding-bottom: 40px;
-}
-.contact-container[data-device-type="mobile"] .contact-grid {
-  grid-template-columns: 1fr;
-  gap: 36px;
-}
-.contact-container[data-device-type="mobile"] .contact-watermark {
-  top: 60px;
+.left-col,
+.right-col {
+  flex: 1;
+  width: auto;
+  box-sizing: border-box;
 }
 
-.contact-container[data-device-type="tablet"] {
-  padding-top: 130px;
-  padding-bottom: 60px;
-}
-.contact-container[data-device-type="tablet"] .contact-grid {
-  grid-template-columns: 1fr;
-  gap: 48px;
-}
-.contact-container[data-device-type="tablet"] .contact-watermark {
-  top: 75px;
-}
-
-.contact-container[data-device-type="desktop"] {
-  padding-top: 160px;
-  padding-bottom: 80px;
-}
-.contact-container[data-device-type="desktop"] .contact-watermark {
-  top: 90px;
-}
-.contact-container[data-device-type="desktop"] .left-col {
+.left-col {
   padding-top: 40px;
+}
+
+/* Responsive scaling overrides */
+@media (max-width: 1023px) {
+  .contact-container {
+    --watermark-offset: 75px;
+    padding-bottom: 60px !important;
+  }
+  .contact-grid {
+    flex-direction: column;
+    gap: 48px;
+    align-items: stretch;
+  }
+  .left-col {
+    padding-top: 0px;
+  }
+}
+
+@media (max-width: 767px) {
+  .contact-container {
+    --watermark-offset: 60px;
+    padding-bottom: 40px !important;
+  }
+  .contact-grid {
+    gap: 36px;
+  }
 }
 
 /* Left Column Info */
