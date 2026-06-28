@@ -85,39 +85,41 @@ import '../styles/contact.css';
 
 
   <main class="contact-container">
-    <!-- Decorative Background Watermark (Interactive React Island) -->
-    <ContactWatermark client:load />
+    <div class="contact-layout-wrapper">
+      <!-- Decorative Background Watermark (Interactive React Island) -->
+      <ContactWatermark client:load />
 
-    <div class="contact-grid">
-      <section class="left-col">
-        <h1 class="left-title">Get in touch</h1>
-        <p class="left-subtext">Have questions or want to collaborate with Developer Students Club at SRM IST Ramapuram?</p>
+      <div class="contact-grid">
+        <section class="left-col">
+          <h1 class="left-title">Get in touch</h1>
+          <p class="left-subtext">Have questions or want to collaborate with Developer Students Club at SRM IST Ramapuram?</p>
 
-        <!-- Social Icons Row for Redirects (React Islands) -->
-        <div class="contact-socials-row">
-          <SocialIconBtn client:load type="email" href="mailto:dsc.srmrmp@gmail.com" value="dsc.srmrmp@gmail.com" label="Email DSC" />
-          <SocialIconBtn client:load type="instagram" href="https://instagram.com/dscsrmrmp" value="@dscsrmrmp" label="Instagram" />
-          <SocialIconBtn client:load type="linkedin" href="https://linkedin.com/company/dscsrmrmp" value="DSC SRM Ramapuram" label="LinkedIn" />
-          <SocialIconBtn client:load type="twitter" href="https://x.com/dscsrmrmp" value="@dscsrmrmp" label="X (Twitter)" />
-        </div>
+          <!-- Social Icons Row for Redirects (React Islands) -->
+          <div class="contact-socials-row">
+            <SocialIconBtn client:load type="email" href="mailto:dsc.srmrmp@gmail.com" value="dsc.srmrmp@gmail.com" label="Email DSC" />
+            <SocialIconBtn client:load type="instagram" href="https://instagram.com/dscsrmrmp" value="@dscsrmrmp" label="Instagram" />
+            <SocialIconBtn client:load type="linkedin" href="https://linkedin.com/company/dscsrmrmp" value="DSC SRM Ramapuram" label="LinkedIn" />
+            <SocialIconBtn client:load type="twitter" href="https://x.com/dscsrmrmp" value="@dscsrmrmp" label="X (Twitter)" />
+          </div>
 
-        <!-- Integrated Dark Map Card (React Island) -->
-        <MapCard client:load />
+          <!-- Integrated Dark Map Card (React Island) -->
+          <MapCard client:load />
 
-        <!-- Address Block below the MapCard -->
-        <div class="map-address-block">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <p>SRM IST Ramapuram, Bharathi Salai, Ramapuram, Chennai, Tamil Nadu 600089</p>
-        </div>
-      </section>
+          <!-- Address Block below the MapCard -->
+          <div class="map-address-block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+              <circle cx="12" cy="10" r="3" />
+            </svg>
+            <p>SRM IST Ramapuram, Bharathi Salai, Ramapuram, Chennai, Tamil Nadu 600089</p>
+          </div>
+        </section>
 
-      <!-- Right Column: Card with Contact Form (React Island) -->
-      <section class="right-col">
-        <ContactFormCard client:load />
-      </section>
+        <!-- Right Column: Card with Contact Form (React Island) -->
+        <section class="right-col">
+          <ContactFormCard client:load />
+        </section>
+      </div>
     </div>
   </main>
 

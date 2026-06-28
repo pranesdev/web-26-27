@@ -223,12 +223,8 @@ body::before {
 
 /* Flex Layout on Container */
 .contact-container {
-  --watermark-size: clamp(6.5rem, 22vw, 18rem);
-  --watermark-offset: 110px;
-  
   max-width: 1000px;
   margin: 0 auto;
-  padding-top: calc(var(--watermark-offset) + var(--watermark-size) / 2) !important;
   padding-bottom: 80px;
   position: relative;
   z-index: 10;
@@ -237,6 +233,15 @@ body::before {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.contact-layout-wrapper {
+  --watermark-size: clamp(6.5rem, 22vw, 18rem);
+  --watermark-offset: 110px;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+  padding-top: calc(var(--watermark-offset) + var(--watermark-size) / 2) !important;
 }
 
 .contact-grid {
