@@ -57,6 +57,7 @@ Proposed commit sequence:
 - **Never use "WIP", "misc", "cleanup", "various fixes", or "updates"** as commit messages. These are signals of non-atomic thinking.
 - **Separate configuration and dependencies**: Upgrading libraries, updating lockfiles, or adding configuration files (e.g., `.gitignore`, `tsconfig.json`) must be isolated into their own `chore` or `build` commits, independent of the feature code that uses them.
 - **Rewrite on correction**: If a file needs to be modified to fix an issue in a previously proposed commit *within the same session*, do not add a new fix commit. Instead, update the proposed diff for that specific commit in your output (i.e., simulate an `amend`).
+- **Push target restriction**: Always push commits only to the `fork` remote repository (`git push fork <branch>`). Never push directly to `origin` or any other upstream remote repository representing the main project codebase.
 
 ## Staging Discipline
 
