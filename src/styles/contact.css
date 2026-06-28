@@ -855,38 +855,30 @@ body {
   transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
   pointer-events: auto; /* Allow direct hover state transitions */
   cursor: pointer;
-  aspect-ratio: 1 / 1;
 }
 
 .art-cutout-wrap:hover {
   opacity: 0.45;
-  /* Glow is applied on the wrapper parent and flows unclipped outside the circular boundaries! */
+  /* Glow wraps the natural body silhouette of the transparent cutout image! */
   filter: drop-shadow(0 0 25px rgba(29, 209, 161, 0.35)) drop-shadow(0 0 50px rgba(29, 209, 161, 0.15));
 }
 
-
-
 .art-cutout {
-  position: absolute;
-  top: -20%; /* Shifts image up so head overflows the top boundary */
-  left: 0;
   width: 100%;
-  height: 120%; /* Taller for the bleed headroom */
+  height: auto;
   display: block;
   filter: grayscale(100%) brightness(0.6) contrast(1.2);
   transition: filter 0.5s ease, transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1);
   z-index: 2;
-  object-fit: cover;
-  object-position: center 20%;
   
-  /* Circular crop matching wrapper bottom/sides, unclipped at the top. No side crop! */
-  clip-path: inset(16.7% 0% 0% 0% round 0% 0% 50% 50%);
-  -webkit-clip-path: inset(16.7% 0% 0% 0% round 0% 0% 50% 50%);
+  /* Soft fade at the bottom to blend straight cut-off edges */
+  mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 15%);
+  -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 15%);
 }
 
 .art-cutout-wrap:hover .art-cutout {
   filter: grayscale(0%) brightness(0.8) contrast(1.1);
-  transform: scale(1.06) translateY(-3%); /* Pops up out of the circle on hover */
+  transform: scale(1.05) translateY(-3%); /* Subtle scale & lift on hover */
 }
 
 /* Individual Cutout Positioning */
