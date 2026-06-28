@@ -190,13 +190,11 @@ import '../styles/contact.css';
       const container = document.querySelector('.contact-container') as HTMLElement;
       if (!watermark || !container) return;
 
-      // Reset container padding-top temporarily for accurate baseline layout measurement
-      container.style.paddingTop = '0px';
-
       const computedStyle = window.getComputedStyle(watermark);
       const fontSize = computedStyle.fontSize;
       const fontFamily = computedStyle.fontFamily;
       const fontWeight = computedStyle.fontWeight || '900';
+      const cssTop = parseFloat(computedStyle.top) || 90;
 
       // Create a canvas context to measure capital letters precisely
       const canvas = document.createElement('canvas');
@@ -211,7 +209,7 @@ import '../styles/contact.css';
 
       // Calculate visual vertical midpoint of watermark
       const elementHeight = watermark.offsetHeight;
-      const visualCenter = watermark.offsetTop + (elementHeight / 2);
+      const visualCenter = cssTop + (elementHeight / 2);
 
       // Push container content down so the top of grid aligns exactly with the watermark midpoint
       container.style.paddingTop = `${visualCenter}px`;
