@@ -13,6 +13,24 @@ import '../styles/contact.css';
 
 <BaseLayout title="Contact — AI Automation SaaS" description="Get in touch with our team to transform your business operations with custom AI automation workflows.">
 
+  <!-- Interactive WebGL SideRays Background (React Island) -->
+  <div class="side-rays-bg">
+    <SideRays
+      client:only="react"
+      speed={1.2}
+      rayColor1="#1dd1a1"
+      rayColor2="#00f2fe"
+      intensity={1.2}
+      spread={2.5}
+      origin="top-right"
+      tilt={0}
+      saturation={1.5}
+      blend={0.75}
+      falloff={1.6}
+      opacity={0.65}
+    />
+  </div>
+
   <!-- Decorative Corner Circuit Board Graphics -->
   <svg class="corner-graphic corner-top-left" width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path d="M0,50 L100,50 L150,100 L220,100" stroke="rgba(232, 237, 233, 0.4)" stroke-width="1.5" stroke-linecap="round" />
@@ -50,24 +68,6 @@ import '../styles/contact.css';
 
   <main class="contact-container">
     <div class="contact-layout-wrapper">
-      <!-- Interactive WebGL SideRays Background (React Island) -->
-      <div class="side-rays-bg">
-        <SideRays
-          client:only="react"
-          speed={1.2}
-          rayColor1="#1dd1a1"
-          rayColor2="#00f2fe"
-          intensity={1.2}
-          spread={2.5}
-          origin="top-right"
-          tilt={0}
-          saturation={1.5}
-          blend={0.75}
-          falloff={1.6}
-          opacity={0.65}
-        />
-      </div>
-
       <!-- Decorative Background Watermark (Interactive React Island) -->
       <ContactWatermark client:load />
 
