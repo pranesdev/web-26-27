@@ -857,9 +857,9 @@ textarea.form-input {
   object-fit: cover;
   object-position: center;
   
-  /* Soft feathered edges on the circular boundary */
-  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 98%);
-  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 98%);
+  /* Soft feathered edges on the circular boundary (70% feather width) */
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
 }
 
 .art-cutout:hover {
