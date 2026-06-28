@@ -850,6 +850,10 @@ textarea.form-input {
   transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
   pointer-events: auto; /* Allow direct hover state transitions */
   cursor: pointer;
+  
+  /* Feathered soft edges to smooth out sharp/straight boundaries */
+  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 95%);
+  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 95%);
 }
 
 .art-cutout:hover {
