@@ -26,41 +26,75 @@ export default function ContactWatermark() {
   return (
     <>
       <div
-        className="contact-watermark"
+        className="contact-watermark-wrapper"
         style={{
           transform: `translateX(-50%) translate3d(${shiftX}px, ${shiftY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: 'transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1)',
           transformStyle: 'preserve-3d',
           perspective: 800,
           willChange: 'transform',
-          animation: 'watermarkDreamyGlow 8s ease-in-out infinite',
+          position: 'absolute',
+          top: 'var(--watermark-offset)',
+          left: '50%',
+          width: '100%',
+          zIndex: 0,
+          pointerEvents: 'none',
+          userSelect: 'none',
         }}
       >
-        Contact
+        {/* Glow Layer (Blurred backdrop) */}
+        <div className="contact-watermark-glow">
+          Contact
+        </div>
+
+        {/* Foreground Text Layer */}
+        <div className="contact-watermark">
+          Contact
+        </div>
       </div>
 
       <style>{`
+        .contact-watermark-wrapper {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+        .contact-watermark-wrapper .contact-watermark {
+          position: absolute;
+          top: 0;
+          left: 0;
+          transform: none;
+          width: 100%;
+        }
+        .contact-watermark-glow {
+          position: absolute;
+          top: 0;
+          left: 0;
+          font-family: 'Bebas Neue', sans-serif;
+          font-weight: 400;
+          font-size: var(--watermark-size);
+          line-height: 1;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+          text-align: center;
+          width: 100%;
+          color: #1dd1a1;
+          z-index: -1;
+          mix-blend-mode: screen;
+          animation: watermarkDreamyGlow 8s ease-in-out infinite;
+        }
         @keyframes watermarkDreamyGlow {
           0% {
-            filter: 
-              drop-shadow(0 0 12px rgba(29, 209, 161, 0.12)) 
-              drop-shadow(0 0 35px rgba(29, 209, 161, 0.07))
-              drop-shadow(0 0 75px rgba(0, 242, 254, 0.04))
-              drop-shadow(0 0 130px rgba(0, 242, 254, 0.02));
+            opacity: 0.22;
+            filter: blur(20px);
           }
           50% {
-            filter: 
-              drop-shadow(0 0 18px rgba(29, 209, 161, 0.20)) 
-              drop-shadow(0 0 50px rgba(29, 209, 161, 0.11))
-              drop-shadow(0 0 95px rgba(0, 242, 254, 0.07))
-              drop-shadow(0 0 160px rgba(0, 242, 254, 0.03));
+            opacity: 0.45;
+            filter: blur(48px);
           }
           100% {
-            filter: 
-              drop-shadow(0 0 12px rgba(29, 209, 161, 0.12)) 
-              drop-shadow(0 0 35px rgba(29, 209, 161, 0.07))
-              drop-shadow(0 0 75px rgba(0, 242, 254, 0.04))
-              drop-shadow(0 0 130px rgba(0, 242, 254, 0.02));
+            opacity: 0.22;
+            filter: blur(20px);
           }
         }
       `}</style>
