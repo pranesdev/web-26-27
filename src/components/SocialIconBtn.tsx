@@ -80,7 +80,7 @@ export default function SocialIconBtn({ type, href, value, label }: Props) {
         x: -8,
         duration: 0.12,
         ease: 'power2.in',
-        onComplete: () => { text.style.display = 'none'; },
+        onComplete: () => { if (text) text.style.display = 'none'; },
       });
       gsap.to(btn, {
         width: 46,
