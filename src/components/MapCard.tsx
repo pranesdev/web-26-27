@@ -10,13 +10,6 @@ function buildSrc(zoom: number) {
 
 export default function MapCard() {
   const [zoom, setZoom]           = useState(BASE_ZOOM);
-  const [labelVisible, setLabel]  = useState(false);
-  const pinRef  = useRef<HTMLAnchorElement>(null);
-  const labelRef = useRef<HTMLDivElement>(null);
-
-  // GSAP-style CSS transition handled purely in CSS; use state for show/hide
-  const handlePinEnter = () => setLabel(true);
-  const handlePinLeave = () => setLabel(false);
 
   return (
     <div className="map-card">
@@ -34,58 +27,11 @@ export default function MapCard() {
           position: 'absolute',
           top: '-70px',
           left: '-70px',
-          pointerEvents: 'none', /* Prevent manual dragging to keep custom pin locked to address */
         }}
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
-
-      {/* Glassmorphic pin */}
-      <a
-        ref={pinRef}
-        href="https://maps.app.goo.gl/xPB6jjbdLTZZtb6Z8"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="custom-theme-pinpoint"
-        id="custom-map-pin"
-        onMouseEnter={handlePinEnter}
-        onMouseLeave={handlePinLeave}
-      >
-        <div className="pinpoint-pulse" />
-        <div className="pinpoint-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="54" height="54" viewBox="0 0 24 24" className="glass-pin-svg">
-            <defs>
-              <filter id="pinNoise" x="0%" y="0%" width="100%" height="100%">
-                <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="noise" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.07 0" />
-                <feComposite operator="in" in2="SourceGraphic" />
-                <feBlend mode="overlay" in2="SourceGraphic" />
-              </filter>
-            </defs>
-            <path
-              className="pin-path"
-              d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"
-            />
-          </svg>
-        </div>
-
-        {/* Hover label */}
-        <div
-          ref={labelRef}
-          className="pinpoint-label"
-          style={{
-            display: 'block',
-            opacity: labelVisible ? 1 : 0,
-            transform: labelVisible ? 'translateY(-4px) scale(1)' : 'translateY(4px) scale(0.95)',
-            transition: 'opacity 0.25s ease, transform 0.25s ease',
-            pointerEvents: 'none',
-          }}
-        >
-          <h4>SRM IST</h4>
-          <p>Ramapuram Campus</p>
-        </div>
-      </a>
 
       {/* Zoom controls */}
       <div className="map-camera-controls">
