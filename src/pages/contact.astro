@@ -1,5 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import SocialIconBtn from '../components/SocialIconBtn.astro';
+import MapCard from '../components/MapCard.astro';
+import ContactFormCard from '../components/ContactFormCard.astro';
 import '../styles/contact.css';
 ---
 
@@ -101,97 +104,19 @@ import '../styles/contact.css';
 
         <!-- Social Icons Row for Redirects -->
         <div class="contact-socials-row">
-          <a href="mailto:dsc.srmrmp@gmail.com" aria-label="Email DSC" class="social-icon-btn" data-type="email">
-            <span class="btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                <polyline points="22,6 12,13 2,6" />
-              </svg>
-            </span>
-            <span class="btn-text">dsc.srmrmp@gmail.com</span>
-          </a>
-          <a href="https://instagram.com/dscsrmrmp" target="_blank" aria-label="Instagram" class="social-icon-btn" data-type="instagram">
-            <span class="btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-              </svg>
-            </span>
-            <span class="btn-text">@dscsrmrmp</span>
-          </a>
-          <a href="https://linkedin.com/company/dscsrmrmp" target="_blank" aria-label="LinkedIn" class="social-icon-btn" data-type="linkedin">
-            <span class="btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
-                <rect x="2" y="9" width="4" height="12"></rect>
-                <circle cx="4" cy="4" r="2"></circle>
-              </svg>
-            </span>
-            <span class="btn-text">DSC SRM Ramapuram</span>
-          </a>
-          <a href="https://x.com/dscsrmrmp" target="_blank" aria-label="X (Twitter)" class="social-icon-btn" data-type="twitter">
-            <span class="btn-icon-wrap">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-              </svg>
-            </span>
-            <span class="btn-text">@dscsrmrmp</span>
-          </a>
+          <SocialIconBtn type="email" href="mailto:dsc.srmrmp@gmail.com" value="dsc.srmrmp@gmail.com" label="Email DSC" />
+          <SocialIconBtn type="instagram" href="https://instagram.com/dscsrmrmp" value="@dscsrmrmp" label="Instagram" />
+          <SocialIconBtn type="linkedin" href="https://linkedin.com/company/dscsrmrmp" value="DSC SRM Ramapuram" label="LinkedIn" />
+          <SocialIconBtn type="twitter" href="https://x.com/dscsrmrmp" value="@dscsrmrmp" label="X (Twitter)" />
         </div>
 
         <!-- Integrated Dark Map Card -->
-        <div class="map-card">
-          <iframe 
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3886.972304909838!2d80.17812167579737!3d13.037416313437142!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3a5260d3d5f1e8e9%3A0xe54e60ea9b25f1b1!2sSRM%20Institute%20Of%20Science%20And%20Technology!5e0!3m2!1sen!2sin!4v1719598000000!5m2!1sen!2sin" 
-            width="100%" 
-            height="100%" 
-            style="border:0; filter: grayscale(1) invert(0.9) contrast(1.25); mix-blend-mode: luminosity; opacity: 0.85;" 
-            allowfullscreen="" 
-            loading="lazy" 
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
-        </div>
-
-        <!-- Physical Address block -->
-        <div class="map-address-block">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
-          <p>SRM IST Ramapuram, Bharathi Salai, Ramapuram, Chennai, Tamil Nadu 600089</p>
-        </div>
+        <MapCard />
       </section>
 
       <!-- Right Column: Card with Contact Form -->
       <section class="right-col">
-        <div class="contact-form-card">
-          <!-- Success Notification Overlay -->
-          <div class="success-overlay" id="form-success-overlay">
-            <div class="success-icon">✓</div>
-            <h2 style="font-size: 22px; font-weight: 600; margin-bottom: 8px; color: var(--text-color);">Message sent</h2>
-            <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px; max-width: 250px; line-height: 1.5;">Our automation experts will contact you within 24 hours.</p>
-            <button class="submit-btn" style="max-width: 200px; background: rgba(232, 237, 233, 0.05); color: var(--text-color); border: 1px solid rgba(232,237,233,0.1);" id="reset-form-btn">Go Back</button>
-          </div>
-
-          <form id="contact-form" novalidate>
-            <div class="form-group">
-              <input type="text" id="name" name="name" class="form-input" placeholder="Name" required />
-            </div>
-
-            <div class="form-group">
-              <input type="email" id="email" name="email" class="form-input" placeholder="Email" required />
-            </div>
-
-            <div class="form-group">
-              <textarea id="message" name="message" class="form-input" placeholder="Message" required></textarea>
-            </div>
-
-            <button type="submit" class="submit-btn" id="submit-btn">
-              <span>Submit</span>
-            </button>
-          </form>
-        </div>
+        <ContactFormCard />
       </section>
     </div>
   </main>
