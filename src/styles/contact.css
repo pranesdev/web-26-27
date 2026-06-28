@@ -845,7 +845,7 @@ textarea.form-input {
 
 .art-cutout {
   position: absolute;
-  opacity: 0.08;
+  opacity: 0.15;
   filter: grayscale(100%) brightness(0.6) contrast(1.2);
   transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
   pointer-events: auto; /* Allow direct hover state transitions */
@@ -853,7 +853,7 @@ textarea.form-input {
 }
 
 .art-cutout:hover {
-  opacity: 0.35;
+  opacity: 0.45;
   filter: grayscale(0%) brightness(0.8) contrast(1.1) drop-shadow(0 0 30px rgba(29, 209, 161, 0.3));
 }
 
@@ -873,8 +873,8 @@ textarea.form-input {
 }
 
 .cutout-3 {
-  right: 5%;
-  top: -80px;
-  width: clamp(200px, 16vw, 280px);
-  transform-origin: top center;
+  left: -80px;
+  top: 15%;
+  width: clamp(220px, 18vw, 300px);
+  transform-origin: center left;
 }
