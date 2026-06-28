@@ -12,6 +12,7 @@ const NAV_LINKS = [
   { label: 'Domains', href: '/#domains' },
   { label: 'Gallery', href: '/gallery' },
   { label: 'Team', href: '/team' },
+  { label: 'Contact', href: '/contact' },
 ];
 
 function RevealLayer({ image, cursorX, cursorY }: { image: string; cursorX: number; cursorY: number }) {
