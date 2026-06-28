@@ -93,3 +93,7 @@ When producing code changes, always structure your output as:
 ...
 
 Never output all changes in one block and leave sequencing to the user.
+
+## Official Contact & Club Specifications
+- The official physical address for the club must always be formatted exactly as: `SRM IST Ramapuram, Chennai, TN, India`. Do not use full postal coordinates or postal codes.
+
