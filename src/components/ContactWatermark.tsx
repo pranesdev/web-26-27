@@ -24,17 +24,34 @@ export default function ContactWatermark() {
   const rotateX = -mouse.y * 3;  // Max rotation of 3 degrees around X axis
 
   return (
-    <div
-      className="contact-watermark"
-      style={{
-        transform: `translateX(-50%) translate3d(${shiftX}px, ${shiftY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
-        transition: 'transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1)',
-        transformStyle: 'preserve-3d',
-        perspective: 800,
-        willChange: 'transform',
-      }}
-    >
-      Contact
-    </div>
+    <>
+      <div
+        className="contact-watermark"
+        style={{
+          transform: `translateX(-50%) translate3d(${shiftX}px, ${shiftY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          transition: 'transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1)',
+          transformStyle: 'preserve-3d',
+          perspective: 800,
+          willChange: 'transform',
+          animation: 'watermarkGlowPulse 6s ease-in-out infinite',
+        }}
+      >
+        Contact
+      </div>
+
+      <style>{`
+        @keyframes watermarkGlowPulse {
+          0% {
+            filter: drop-shadow(0 0 15px rgba(29, 209, 161, 0.12)) drop-shadow(0 0 30px rgba(29, 209, 161, 0.05));
+          }
+          50% {
+            filter: drop-shadow(0 0 25px rgba(29, 209, 161, 0.22)) drop-shadow(0 0 50px rgba(29, 209, 161, 0.12));
+          }
+          100% {
+            filter: drop-shadow(0 0 15px rgba(29, 209, 161, 0.12)) drop-shadow(0 0 30px rgba(29, 209, 161, 0.05));
+          }
+        }
+      `}</style>
+    </>
   );
 }
