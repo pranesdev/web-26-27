@@ -4,6 +4,8 @@ import SocialIconBtn from '../components/SocialIconBtn.tsx';
 import MapCard from '../components/MapCard.tsx';
 import ContactFormCard from '../components/ContactFormCard.tsx';
 import ContactWatermark from '../components/ContactWatermark.tsx';
+import Header from '../components/Header.tsx';
+import Footer from '../components/Footer.tsx';
 import '../styles/contact.css';
 ---
 
@@ -40,48 +42,8 @@ import '../styles/contact.css';
     </div>
   </div>
 
-  <!-- Navigation -->
-  <header class="home-nav-header">
-    <a href="/" class="home-nav-logo">
-      <img src="/creative-ai/club logo.png" alt="DSC Logo" />
-    </a>
-    <nav class="home-nav-pill hidden md:flex">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/#domains">Domains</a>
-      <a href="/gallery">Gallery</a>
-      <a href="/team">Team</a>
-      <a href="/contact" class="active">Contact</a>
-    </nav>
-    <div class="home-nav-cta">
-      <a href="#" class="home-join-btn hidden md:block">Join Us</a>
-      <button class="mobile-menu-btn md:hidden" id="menu-open-btn">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" x2="20" y1="12" y2="12" />
-          <line x1="4" x2="20" y1="6" y2="6" />
-          <line x1="4" x2="20" y1="18" y2="18" />
-        </svg>
-      </button>
-    </div>
-  </header>
-
-  <!-- Mobile Drawer Menu -->
-  <div class="mobile-menu-drawer" id="mobile-drawer">
-    <button class="close-btn" id="menu-close-btn">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" x2="6" y1="6" y2="18" />
-        <line x1="6" x2="18" y1="6" y2="18" />
-      </svg>
-    </button>
-    <div class="mobile-menu-links">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/#domains">Domains</a>
-      <a href="/gallery">Gallery</a>
-      <a href="/team">Team</a>
-      <a href="/contact" class="active">Contact</a>
-    </div>
-  </div>
+  <!-- Navigation & Mobile Menu (React Island) -->
+  <Header client:load active="contact" />
 
 
   <main class="contact-container">
@@ -123,45 +85,8 @@ import '../styles/contact.css';
     </div>
   </main>
 
-  <!-- Footer -->
-  <footer class="contra-footer" id="contact-footer">
-    <div class="contra-content">
-      <h2 class="contra-logo" style="font-family: 'Playfair Display', Georgia, serif; font-weight: 500; font-size: 2.5rem; letter-spacing: normal;">Developer Students Club</h2>
-      <p class="contra-subtitle">SRM IST, Ramapuram</p>
-      
-      <div class="contra-socials">
-        <a href="https://x.com/dscsrmrmp" target="_blank" aria-label="X">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-          </svg>
-        </a>
-
-        <a href="https://linkedin.com/company/dscsrmrmp" target="_blank" aria-label="LinkedIn">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-          </svg>
-        </a>
-        <a href="https://instagram.com/dscsrmrmp" target="_blank" aria-label="Instagram">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
-            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
-            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
-          </svg>
-        </a>
-      </div>
-
-      <div class="contra-links">
-        <a href="/">Home</a>
-        <a href="/about">About</a>
-        <a href="/#domains">Domains</a>
-        <a href="/gallery">Gallery</a>
-        <a href="/team">Team</a>
-        <a href="/contact" class="active">Contact</a>
-      </div>
-    </div>
-
-    <video src="https://framerusercontent.com/assets/hmg5dFU33RwVgzS4V0wrSxuKJ3E.mp4" class="contra-art" autoplay loop muted playsinline></video>
-  </footer>
+  <!-- Footer (React Island) -->
+  <Footer client:load active="contact" />
 
   <script>
     // Social icon GSAP hover — now handled by SocialIconBtn.tsx island
@@ -170,28 +95,6 @@ import '../styles/contact.css';
 
     // Form submit + toast — now handled by ContactFormCard.tsx island
 
-    // Mobile menu drawer elements
-    const menuOpenBtn = document.getElementById('menu-open-btn');
-    const menuCloseBtn = document.getElementById('menu-close-btn');
-    const mobileDrawer = document.getElementById('mobile-drawer');
-
-    // Mobile Menu Drawer Toggle
-    if (menuOpenBtn && menuCloseBtn && mobileDrawer) {
-      menuOpenBtn.addEventListener('click', () => {
-        mobileDrawer.classList.add('open');
-      });
-
-      menuCloseBtn.addEventListener('click', () => {
-        mobileDrawer.classList.remove('open');
-      });
-
-      // Close drawer on clicking link
-      const links = mobileDrawer.querySelectorAll('a');
-      links.forEach(link => {
-        link.addEventListener('click', () => {
-          mobileDrawer.classList.remove('open');
-        });
-      });
-    }
+    // Mobile menu drawer toggle — now handled by Header.tsx island
   </script>
 </BaseLayout>
