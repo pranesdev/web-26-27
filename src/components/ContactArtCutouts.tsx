@@ -29,32 +29,34 @@ export default function ContactArtCutouts() {
   return (
     <div className="contact-art-cutouts">
       {/* Cutout 1: Courbet - The Desperate Man (Bottom-Left peeking) */}
-      <img
-        src={getSrc(img1)}
-        alt="Renaissance Art Cutout 1"
-        className="art-cutout cutout-1"
+      <div
+        className="art-cutout-wrap cutout-1"
         style={{
           transform: `translate3d(${mouse.x * -25}px, ${mouse.y * -15}px, 0) rotate(-8deg)`,
         }}
-      />
+      >
+        <img src={getSrc(img1)} alt="Renaissance Art Cutout 1" className="art-cutout" />
+      </div>
+
       {/* Cutout 2: Shh (Right peeking) */}
-      <img
-        src={getSrc(img2)}
-        alt="Renaissance Art Cutout 2"
-        className="art-cutout cutout-2"
+      <div
+        className="art-cutout-wrap cutout-2"
         style={{
           transform: `translate3d(${mouse.x * 20}px, ${mouse.y * 30}px, 0) rotate(5deg)`,
         }}
-      />
+      >
+        <img src={getSrc(img2)} alt="Renaissance Art Cutout 2" className="art-cutout" />
+      </div>
+
       {/* Cutout 3: Surprised (Top-Right floating) */}
-      <img
-        src={getSrc(img3)}
-        alt="Renaissance Art Cutout 3"
-        className="art-cutout cutout-3"
+      <div
+        className="art-cutout-wrap cutout-3"
         style={{
           transform: `translate3d(${mouse.x * -15}px, ${mouse.y * 20}px, 0) rotate(12deg)`,
         }}
-      />
+      >
+        <img src={getSrc(img3)} alt="Renaissance Art Cutout 3" className="art-cutout" />
+      </div>
     </div>
   );
 }

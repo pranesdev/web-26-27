@@ -845,13 +845,27 @@ textarea.form-input {
   overflow: hidden;
 }
 
-.art-cutout {
+.art-cutout-wrap {
   position: absolute;
   opacity: 0.15;
-  filter: grayscale(100%) brightness(0.6) contrast(1.2);
   transition: transform 0.4s cubic-bezier(0.1, 0.8, 0.2, 1), opacity 0.5s ease, filter 0.5s ease;
   pointer-events: auto; /* Allow direct hover state transitions */
   cursor: pointer;
+  border-radius: 50%; /* Ensures the drop-shadow calculates in a matching circular profile */
+}
+
+.art-cutout-wrap:hover {
+  opacity: 0.45;
+  /* Glow is applied on the wrapper parent and flows unclipped outside the feathered boundaries! */
+  filter: drop-shadow(0 0 25px rgba(29, 209, 161, 0.35)) drop-shadow(0 0 50px rgba(29, 209, 161, 0.15));
+}
+
+.art-cutout {
+  width: 100%;
+  height: 100%;
+  display: block;
+  filter: grayscale(100%) brightness(0.6) contrast(1.2);
+  transition: filter 0.5s ease;
   
   /* Perfect circular crop */
   aspect-ratio: 1 / 1;
@@ -864,9 +878,8 @@ textarea.form-input {
   -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 30%, rgba(0, 0, 0, 0) 100%);
 }
 
-.art-cutout:hover {
-  opacity: 0.45;
-  filter: grayscale(0%) brightness(0.8) contrast(1.1) drop-shadow(0 0 30px rgba(29, 209, 161, 0.3));
+.art-cutout-wrap:hover .art-cutout {
+  filter: grayscale(0%) brightness(0.8) contrast(1.1);
 }
 
 /* Individual Cutout Positioning */
