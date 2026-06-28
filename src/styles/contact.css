@@ -48,7 +48,8 @@ body::before {
   position: absolute;
   --watermark-size: clamp(4.5rem, 15vw, 11rem);
   font-size: var(--watermark-size);
-  top: calc(var(--container-pad-top) - (var(--watermark-size) * 0.45));
+  line-height: 0.7;
+  top: calc(var(--container-pad-top) - (var(--watermark-size) * 0.32));
   left: 50%;
   transform: translateX(-50%);
   font-family: 'Inter', sans-serif;
