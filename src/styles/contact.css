@@ -265,6 +265,17 @@ body::before {
   flex-direction: column;
 }
 
+/* Desktop only: cap left column to match form card height exactly */
+@media (min-width: 1024px) {
+  .left-col {
+    overflow: hidden;
+  }
+  /* Address block is redundant on desktop — pin already links to maps */
+  .map-address-block {
+    display: none;
+  }
+}
+
 /* Responsive scaling overrides */
 @media (max-width: 1023px) {
   .contact-container {
@@ -278,6 +289,11 @@ body::before {
   }
   .left-col {
     padding-top: 0px;
+    overflow: visible;
+  }
+  /* Restore address block on stacked layouts */
+  .map-address-block {
+    display: flex;
   }
 }
 
