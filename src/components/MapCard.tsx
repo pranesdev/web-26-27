@@ -35,14 +35,32 @@ export default function MapCard() {
           transform: `scale(${scale})`,
           transition: 'transform 0.4s cubic-bezier(0.25, 1, 0.5, 1)',
           transformOrigin: 'center center',
+          pointerEvents: 'none', /* Prevent drag interception to let overlay link receive clicks */
         }}
         allowFullScreen
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"
       />
 
+      {/* Clickable overlay link */}
+      <a
+        href="https://maps.app.goo.gl/7Yjs4TUaQt6CBKCk8"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          zIndex: 5,
+          cursor: 'pointer',
+        }}
+        aria-label="View on Google Maps"
+      />
+
       {/* Zoom controls */}
-      <div className="map-camera-controls">
+      <div className="map-camera-controls" style={{ zIndex: 10 }}>
         <button
           className="map-control-btn"
           title="Zoom In"
