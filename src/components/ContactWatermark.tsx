@@ -17,11 +17,11 @@ export default function ContactWatermark() {
     };
   }, []);
 
-  // Calculate 3D transformation values
-  const shiftX = mouse.x * 20;   // Max horizontal shift of 20px
-  const shiftY = mouse.y * 10;   // Max vertical shift of 10px
-  const rotateY = mouse.x * 8;   // Max rotation of 8 degrees around Y axis
-  const rotateX = -mouse.y * 8;  // Max rotation of 8 degrees around X axis
+  // Calculate 3D transformation values (reduced intensity)
+  const shiftX = mouse.x * 8;    // Max horizontal shift of 8px
+  const shiftY = mouse.y * 4;    // Max vertical shift of 4px
+  const rotateY = mouse.x * 3;   // Max rotation of 3 degrees around Y axis
+  const rotateX = -mouse.y * 3;  // Max rotation of 3 degrees around X axis
 
   return (
     <div
