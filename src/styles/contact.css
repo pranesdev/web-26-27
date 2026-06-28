@@ -268,7 +268,16 @@ body::before {
 /* Desktop only: cap left column to match form card height exactly */
 @media (min-width: 1024px) {
   .left-col {
+    position: relative;
+    padding-top: 0;
     overflow: hidden;
+  }
+  .contact-socials-row {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    margin-bottom: 0;
+    z-index: 20;
   }
   /* Address block is redundant on desktop — pin already links to maps */
   .map-address-block {
