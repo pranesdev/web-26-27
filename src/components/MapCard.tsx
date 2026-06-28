@@ -57,7 +57,7 @@ export default function MapCard() {
             <defs>
               <filter id="pinNoise" x="0%" y="0%" width="100%" height="100%">
                 <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" result="noise" />
-                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.18 0" />
+                <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 0.07 0" />
                 <feComposite operator="in" in2="SourceGraphic" />
                 <feBlend mode="overlay" in2="SourceGraphic" />
               </filter>
