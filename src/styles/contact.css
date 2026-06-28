@@ -58,76 +58,101 @@ body::before {
   text-transform: uppercase;
 }
 
-/* Frosted glass nav pill */
-.saas-navbar {
+/* Navigation and Header (copied from about.css to match universal site layout) */
+.home-nav-header {
   position: absolute;
-  top: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: calc(100% - 48px);
-  max-width: 800px;
-  height: 56px;
-  background: rgba(17, 23, 20, 0.4);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(232, 237, 233, 0.08);
-  border-radius: 9999px;
+  top: 40px;
+  left: 0;
+  right: 0;
+  z-index: 100;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 16px;
+  pointer-events: none;
+  font-family: 'Inter', sans-serif;
+}
+.home-nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  text-decoration: none;
+  pointer-events: auto;
+}
+.home-nav-logo img {
+  height: 80px;
+  object-fit: contain;
+  transform: translateY(-10px);
+}
+.home-nav-pill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 100;
-}
-
-.nav-logo-gear {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  background: rgba(232, 237, 233, 0.04);
-  border: 1px solid rgba(232, 237, 233, 0.08);
+  background: rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.3);
+  border-radius: 9999px;
+  padding: 8px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  color: var(--text-color);
+  gap: 4px;
+  pointer-events: auto;
 }
-
-.nav-links-container {
-  display: flex;
-  align-items: center;
-  gap: 22px;
-}
-
-.nav-links-container a {
-  color: var(--text-muted);
+.home-nav-pill a {
+  padding: 6px 16px;
+  border-radius: 9999px;
   font-size: 14px;
   font-weight: 500;
   text-decoration: none;
-  transition: color 0.2s;
+  transition: background 0.2s, color 0.2s;
+  color: rgba(255,255,255,0.8);
 }
-
-.nav-links-container a:hover,
-.nav-links-container a.active {
-  color: var(--text-color);
+.home-nav-pill a:hover, .home-nav-pill a.active {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
 }
-
-.nav-cta-btn {
-  background: rgba(17, 23, 20, 0.8);
-  color: var(--text-color);
-  border: 1px solid rgba(232, 237, 233, 0.08);
-  padding: 8px 18px;
-  border-radius: 9999px;
-  font-size: 13px;
-  font-weight: 600;
-  text-decoration: none;
+.home-nav-cta {
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: background 0.2s, border-color 0.2s;
+  pointer-events: auto;
 }
-
-.nav-cta-btn:hover {
-  background: rgba(232, 237, 233, 0.05);
-  border-color: rgba(232, 237, 233, 0.2);
+.home-join-btn {
+  background: #fff;
+  color: #111827;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 10px 24px;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+.home-join-btn:hover {
+  background: #f3f4f6;
+}
+.mobile-menu-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 16px;
+}
+.mobile-menu-btn svg {
+  width: 24px;
+  height: 24px;
+  color: #fff;
+}
+@media (min-width: 768px) {
+  .hidden.md\:flex { display: flex; }
+  .hidden.md\:block { display: block; }
+  .md\:hidden { display: none; }
+}
+@media (max-width: 767px) {
+  .hidden.md\:flex { display: none; }
+  .hidden.md\:block { display: none; }
+  .md\:hidden { display: block; }
 }
 
 /* Corner Circuit Graphics */
