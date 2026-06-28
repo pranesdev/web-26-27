@@ -335,52 +335,41 @@ body::before {
   color: var(--accent-glow);
 }
 
-/* Tooltip container */
-.social-icon-btn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 125%;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  background: rgba(8, 13, 11, 0.95);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: var(--text-color);
-  padding: 6px 12px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 500;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  z-index: 100;
-}
-
-/* Small tooltip pointer arrow */
-.social-icon-btn::before {
-  content: '';
-  position: absolute;
-  bottom: 112%;
-  left: 50%;
-  transform: translateX(-50%) translateY(6px);
-  border-width: 6px 6px 0 6px;
-  border-style: solid;
-  border-color: rgba(8, 13, 11, 0.95) transparent transparent transparent;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.2s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 100;
-}
-
-.social-icon-btn:hover::after,
-.social-icon-btn:hover::before {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
-
 .social-icon-btn svg {
   display: block;
+}
+
+/* Dynamic Social Detail Display Box */
+.social-detail-box {
+  background-image: 
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E"),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 100%);
+  background-color: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  width: 100%;
+  box-sizing: border-box;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.detail-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--accent-glow);
+  margin-bottom: 4px;
+  font-weight: 600;
+}
+
+.detail-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-color);
+  word-break: break-all;
 }
 
 /* Integrated Dark Map Card */

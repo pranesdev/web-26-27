@@ -101,31 +101,37 @@ import '../styles/contact.css';
 
         <!-- Social Icons Row for Redirects -->
         <div class="contact-socials-row">
-          <a href="mailto:dsc.srmrmp@gmail.com" aria-label="Email DSC" class="social-icon-btn" data-tooltip="dsc.srmrmp@gmail.com">
+          <a href="mailto:dsc.srmrmp@gmail.com" aria-label="Email DSC" class="social-icon-btn" data-type="email">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
               <polyline points="22,6 12,13 2,6" />
             </svg>
           </a>
-          <a href="https://instagram.com/dscsrmrmp" target="_blank" aria-label="Instagram" class="social-icon-btn" data-tooltip="@dscsrmrmp">
+          <a href="https://instagram.com/dscsrmrmp" target="_blank" aria-label="Instagram" class="social-icon-btn" data-type="instagram">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
           </a>
-          <a href="https://linkedin.com/company/dscsrmrmp" target="_blank" aria-label="LinkedIn" class="social-icon-btn" data-tooltip="LinkedIn Community">
+          <a href="https://linkedin.com/company/dscsrmrmp" target="_blank" aria-label="LinkedIn" class="social-icon-btn" data-type="linkedin">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
               <rect x="2" y="9" width="4" height="12"></rect>
               <circle cx="4" cy="4" r="2"></circle>
             </svg>
           </a>
-          <a href="https://x.com/dscsrmrmp" target="_blank" aria-label="X (Twitter)" class="social-icon-btn" data-tooltip="X / Twitter">
+          <a href="https://x.com/dscsrmrmp" target="_blank" aria-label="X (Twitter)" class="social-icon-btn" data-type="twitter">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
               <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
             </svg>
           </a>
+        </div>
+
+        <!-- Dynamic Social Detail Display Box -->
+        <div class="social-detail-box" id="social-detail-box">
+          <div class="detail-label" id="detail-label">Connect with us</div>
+          <div class="detail-value" id="detail-value">Hover an icon to reveal details</div>
         </div>
 
         <!-- Integrated Dark Map Card -->
@@ -244,6 +250,65 @@ import '../styles/contact.css';
     // Run initially and on resize
     window.addEventListener('resize', updateDeviceType);
     updateDeviceType();
+
+    import { gsap } from 'gsap';
+
+    // Social Details Data
+    const socialDetails = {
+      email: { label: "Email us", value: "dsc.srmrmp@gmail.com" },
+      instagram: { label: "Instagram", value: "@dscsrmrmp" },
+      linkedin: { label: "LinkedIn", value: "Developer Students Club, SRMRMP" },
+      twitter: { label: "X / Twitter", value: "@dscsrmrmp" }
+    };
+
+    const socialBtns = document.querySelectorAll('.social-icon-btn');
+    const labelEl = document.getElementById('detail-label');
+    const valueEl = document.getElementById('detail-value');
+    const boxEl = document.getElementById('social-detail-box');
+    
+    const defaultLabel = "Connect with us";
+    const defaultValue = "Hover an icon to reveal details";
+
+    if (socialBtns.length && labelEl && valueEl && boxEl) {
+      socialBtns.forEach(btn => {
+        btn.addEventListener('mouseenter', () => {
+          const type = btn.getAttribute('data-type');
+          if (socialDetails[type]) {
+            gsap.to(boxEl, {
+              opacity: 0,
+              x: -16,
+              duration: 0.12,
+              ease: 'power2.in',
+              onComplete: () => {
+                labelEl.textContent = socialDetails[type].label;
+                valueEl.textContent = socialDetails[type].value;
+                gsap.fromTo(boxEl, 
+                  { opacity: 0, x: 16 },
+                  { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }
+                );
+              }
+            });
+          }
+        });
+        
+        btn.addEventListener('mouseleave', () => {
+          gsap.to(boxEl, {
+            opacity: 0,
+            x: -16,
+            duration: 0.12,
+            ease: 'power2.in',
+            onComplete: () => {
+              labelEl.textContent = defaultLabel;
+              valueEl.textContent = defaultValue;
+              gsap.fromTo(boxEl, 
+                { opacity: 0, x: 16 },
+                { opacity: 1, x: 0, duration: 0.3, ease: 'power2.out' }
+              );
+            }
+          });
+        });
+      });
+    }
 
     // Form and Success Overlay elements
     const form = document.getElementById('contact-form');
