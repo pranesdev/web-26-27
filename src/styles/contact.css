@@ -223,7 +223,7 @@ body::before {
 
 /* Flex Layout on Container */
 .contact-container {
-  --watermark-size: clamp(4.5rem, 15vw, 11rem);
+  --watermark-size: clamp(6.5rem, 22vw, 18rem);
   --watermark-offset: 110px;
   
   max-width: 1000px;
