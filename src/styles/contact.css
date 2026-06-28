@@ -361,8 +361,6 @@ body::before {
   display: flex;
   gap: 16px;
   margin-bottom: 28px;
-  position: relative;
-  z-index: 5;
 }
 
 .social-icon-btn {
