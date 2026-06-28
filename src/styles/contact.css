@@ -851,9 +851,15 @@ textarea.form-input {
   pointer-events: auto; /* Allow direct hover state transitions */
   cursor: pointer;
   
-  /* Feathered soft edges to smooth out sharp/straight boundaries */
-  mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 95%);
-  -webkit-mask-image: radial-gradient(ellipse at center, rgba(0, 0, 0, 1) 45%, rgba(0, 0, 0, 0) 95%);
+  /* Perfect circular crop */
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: center;
+  
+  /* Soft feathered edges on the circular boundary */
+  mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 98%);
+  -webkit-mask-image: radial-gradient(circle, rgba(0, 0, 0, 1) 40%, rgba(0, 0, 0, 0) 98%);
 }
 
 .art-cutout:hover {
