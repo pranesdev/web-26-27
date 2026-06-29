@@ -42,7 +42,7 @@ export default function Footer({ active }: Props) {
         </div>
       </div>
 
-      <video src="https://framerusercontent.com/assets/hmg5dFU33RwVgzS4V0wrSxuKJ3E.mp4" className="contra-art" autoPlay loop muted playsInline />
+      <video src="https://framerusercontent.com/assets/hmg5dFU33RwVgzS4V0wrSxuKJ3E.mp4" className="contra-art" autoPlay loop muted playsInline preload="none" />
     </footer>
   );
 }
