@@ -17,6 +17,11 @@ const { title, description } = Astro.props;
   <meta name="keywords" content="DSC, Developer Students Club, SRM IST, Ramapuram, coding, hackathon, workshops, student developers">
   <title>{title || "Developer Students Club | SRM IST Ramapuram"}</title>
   <link rel="icon" type="image/webp" href="/creative-ai/image2-removebg-preview.webp">
+  <!-- Preconnect to CDN and image hosts to minimize connection latency -->
+  <link rel="preconnect" href="https://cdn.developerstudents.club">
+  <link rel="dns-prefetch" href="https://cdn.developerstudents.club">
+  <link rel="preconnect" href="https://images.higgs.ai">
+  <link rel="dns-prefetch" href="https://images.higgs.ai">
   <!-- Async font loading: preconnect first, then non-blocking stylesheet -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
