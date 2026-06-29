@@ -186,7 +186,7 @@ export default function Hero() {
         {/* Left — DSC Logo */}
         <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', textDecoration: 'none', pointerEvents: 'auto' }}>
           <img
-            src="/creative-ai/club logo.png"
+            src="/logo/club-logo.png"
             alt="DSC Logo"
             width="80"
             height="80"
