@@ -188,6 +188,8 @@ export default function Hero() {
           <img
             src="/creative-ai/club logo.png"
             alt="DSC Logo"
+            width="80"
+            height="80"
             style={{ height: '80px', objectFit: 'contain', transform: 'translateY(-10px)' }}
           />
         </a>
