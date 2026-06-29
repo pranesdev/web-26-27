@@ -49,12 +49,23 @@ function getDependencyTree(jsPath, visited = new Set()) {
   return visited;
 }
 
-console.log("=== Running Post-build Island Modulepreload Injector ===");
-
 const htmlFiles = getFiles(DIST_DIR, '.html');
 
 for (const htmlFile of htmlFiles) {
   let htmlContent = fs.readFileSync(htmlFile, 'utf-8');
+  console.log(`Processing: ${htmlFile}`);
+
+  // Inline stylesheet link tags to eliminate render-blocking CSS
+  const stylesheetRegex = /<link rel=["']stylesheet["'] href=["'](\/_astro\/[^"']+\.css)["']>/g;
+  htmlContent = htmlContent.replace(stylesheetRegex, (match, cssUrl) => {
+    const cssLocalPath = path.resolve(path.join(DIST_DIR, cssUrl));
+    if (fs.existsSync(cssLocalPath)) {
+      const cssContent = fs.readFileSync(cssLocalPath, 'utf-8');
+      console.log(`  Inlined stylesheet: ${cssUrl}`);
+      return `<style>${cssContent}</style>`;
+    }
+    return match;
+  });
   
   // Find all component-url, renderer-url, before-hydration-url in astro-island tags
   const islandRegex = /(?:component-url|renderer-url|before-hydration-url)=["']([^"']+)["']/g;
@@ -65,9 +76,10 @@ for (const htmlFile of htmlFiles) {
     urls.add(match[1]);
   }
 
-  if (urls.size === 0) continue;
-
-  console.log(`Processing: ${htmlFile}`);
+  if (urls.size === 0) {
+    fs.writeFileSync(htmlFile, htmlContent, 'utf-8');
+    continue;
+  }
   
   // Build a dependency tree of all JS files loaded by the islands
   const allDeps = new Set();
