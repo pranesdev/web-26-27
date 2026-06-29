@@ -1,19 +1,11 @@
 import { useEffect, useRef, useState } from 'react';
-import { Menu } from 'lucide-react';
+import Header from './Header';
 
 const BG_IMAGE_1 = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260609_195923_b0ba8ace-1d1d-4f2c-9a28-1ab84b330680.png&w=1280&q=85';
 const BG_IMAGE_2 = 'https://images.higgs.ai/?default=1&output=webp&url=https%3A%2F%2Fd8j0ntlcm91z4.cloudfront.net%2Fuser_38xzZboKViGWJOttwIXH07lWA1P%2Fhf_20260609_201152_bba90a12-bf12-459f-91f0-51f237dbaf3b.png&w=1280&q=85';
 
 const SPOTLIGHT_R = 260;
 
-const NAV_LINKS = [
-  { label: 'Home', href: '/' },
-  { label: 'About', href: '/about' },
-  { label: 'Domains', href: '/#domains' },
-  { label: 'Gallery', href: '/gallery' },
-  { label: 'Team', href: '/team' },
-  { label: 'Contact', href: '/contact' },
-];
 
 function RevealLayer({ image, cursorX, cursorY }: { image: string; cursorX: number; cursorY: number }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -170,106 +162,7 @@ export default function Hero() {
         </div>
       </div>
 
-      {/* ===== Absolute Header (Logo, Nav, CTA) ===== */}
-      <header style={{
-        position: 'absolute',
-        top: '40px',
-        left: 0,
-        right: 0,
-        zIndex: 100,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '16px',
-        pointerEvents: 'none',
-      }}>
-        {/* Left — DSC Logo */}
-        <a href="/" style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#fff', textDecoration: 'none', pointerEvents: 'auto' }}>
-          <img
-            src="/logo/club-logo.png"
-            alt="DSC Logo"
-            width="80"
-            height="80"
-            style={{ height: '80px', objectFit: 'contain', transform: 'translateY(-10px)' }}
-          />
-        </a>
-
-        {/* Center Nav Pill */}
-        <nav style={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
-          zIndex: 100,
-          background: 'rgba(255,255,255,0.2)',
-          backdropFilter: 'blur(12px)',
-          WebkitBackdropFilter: 'blur(12px)',
-          border: '1px solid rgba(255,255,255,0.3)',
-          borderRadius: '9999px',
-          padding: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px',
-          pointerEvents: 'auto',
-        }} className="hidden md:flex">
-          {NAV_LINKS.map((link, i) => (
-            <a
-              key={link.label}
-              href={link.href}
-              style={{
-                color: i === 0 ? '#fff' : 'rgba(255,255,255,0.8)',
-                padding: '6px 16px',
-                borderRadius: '9999px',
-                fontSize: '14px',
-                fontWeight: 500,
-                textDecoration: 'none',
-                transition: 'background 0.2s, color 0.2s',
-                fontFamily: "'Inter', sans-serif",
-              }}
-              onMouseEnter={(e) => {
-                if (i !== 0) {
-                  e.currentTarget.style.background = 'rgba(255,255,255,0.2)';
-                  e.currentTarget.style.color = '#fff';
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (i !== 0) {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.color = 'rgba(255,255,255,0.8)';
-                }
-              }}
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        {/* Right — Desktop CTA & Mobile Hamburger */}
-        <div style={{ display: 'flex', alignItems: 'center', pointerEvents: 'auto' }}>
-          <a
-            href="#"
-            className="hidden md:block"
-            style={{
-              background: '#fff',
-              color: '#111827',
-              fontSize: '14px',
-              fontWeight: 600,
-              padding: '10px 24px',
-              borderRadius: '9999px',
-              textDecoration: 'none',
-              fontFamily: "'Inter', sans-serif",
-              transition: 'background 0.2s',
-            }}
-            onMouseEnter={(e) => { e.currentTarget.style.background = '#f3f4f6'; }}
-            onMouseLeave={(e) => { e.currentTarget.style.background = '#fff'; }}
-          >
-            Join Us
-          </a>
-          <button className="md:hidden" aria-label="Open navigation menu" style={{ background: 'none', border: 'none', cursor: 'pointer', marginLeft: '16px' }}>
-            <Menu style={{ width: '24px', height: '24px', color: '#fff' }} />
-          </button>
-        </div>
-      </header>
+      <Header active="home" />
 
       {/* ===== Hero Section ===== */}
       <section className="relative w-full overflow-hidden h-screen" style={{ height: '100dvh', backgroundImage: "url('/creative-ai/1782459062237-ezremove.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
