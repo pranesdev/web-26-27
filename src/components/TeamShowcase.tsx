@@ -179,7 +179,7 @@ export default function TeamShowcase() {
               setSelectedGraphMember(null);
             }}
           >
-            Interactive Graph View
+            Graph View
           </button>
         </div>
 
