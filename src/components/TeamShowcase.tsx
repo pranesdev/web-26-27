@@ -168,10 +168,6 @@ export default function TeamShowcase() {
                 <div className="team-image-container">
                   <img src={president.image} alt={president.name} className="team-member-image" />
                   <div className="team-image-overlay" />
-                  
-                  <div className="team-card-domain-badge badge-leadership">
-                    PRESIDENT
-                  </div>
 
                   <div className="team-social-overlay-row">
                     <a href={president.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
@@ -218,11 +214,6 @@ export default function TeamShowcase() {
                 <div className="team-image-container">
                   <img src={m.image} alt={m.name} className="team-member-image" />
                   <div className="team-image-overlay" />
-                  
-                  {/* Domain Tag */}
-                  <div className={`team-card-domain-badge badge-${m.domain}`}>
-                    {m.domain}
-                  </div>
 
                   {/* Overlay Social Icons Row */}
                   <div className="team-social-overlay-row">
@@ -412,28 +403,6 @@ export default function TeamShowcase() {
           filter: grayscale(0%) brightness(0.85) contrast(1.05);
           transform: scale(1.04);
         }
-
-        /* Domain Tag Badge */
-        .team-card-domain-badge {
-          position: absolute;
-          top: 12px;
-          left: 12px;
-          font-family: 'Inter', sans-serif;
-          font-size: 10px;
-          font-weight: 600;
-          letter-spacing: 0.08em;
-          text-transform: uppercase;
-          padding: 4px 10px;
-          border-radius: 20px;
-          z-index: 5;
-          backdrop-filter: blur(8px);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .badge-leadership { background: rgba(29, 209, 161, 0.12); border-color: rgba(29, 209, 161, 0.2); color: #1dd1a1; }
-        .badge-technical { background: rgba(0, 242, 254, 0.12); border-color: rgba(0, 242, 254, 0.2); color: #00f2fe; }
-        .badge-creatives { background: rgba(168, 85, 247, 0.12); border-color: rgba(168, 85, 247, 0.2); color: #c084fc; } /* Soft purple */
-        .badge-operations { background: rgba(234, 179, 8, 0.12); border-color: rgba(234, 179, 8, 0.2); color: #eab308; }
 
         .team-image-overlay {
           position: absolute;
