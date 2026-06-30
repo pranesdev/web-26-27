@@ -11,7 +11,6 @@ interface Member {
   linkedin: string;
   email: string;
   skills?: string[];
-  keywords?: string[];
 }
 
 const MEMBERS: Member[] = [
@@ -24,7 +23,6 @@ const MEMBERS: Member[] = [
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
     skills: ['Presidency', 'Club Strategy', 'Public Speaking', 'Team Coordination'],
-    keywords: ['president', 'leadership', 'strategy', 'planning', 'coordination', 'club', 'srm ist'],
   },
   {
     name: 'Aditya Kumar',
@@ -35,7 +33,6 @@ const MEMBERS: Member[] = [
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
     skills: ['Web Dev', 'React', 'Node.js', 'Astro', 'Database Architecture'],
-    keywords: ['web dev', 'react', 'astro', 'backend', 'frontend', 'node', 'database', 'api', 'git', 'javascript', 'html', 'css', 'coding', 'website'],
   },
   {
     name: 'Deepika Menon',
@@ -46,7 +43,6 @@ const MEMBERS: Member[] = [
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
     skills: ['UI/UX Design', 'Figma', 'Graphic Design', 'Video Editing'],
-    keywords: ['design', 'ui/ux', 'figma', 'graphics', 'video editing', 'content', 'photoshop', 'creatives', 'art', 'branding', 'assets', 'logo'],
   },
   {
     name: 'Sneha Patel',
@@ -57,7 +53,6 @@ const MEMBERS: Member[] = [
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
     skills: ['Event Planning', 'Public Relations', 'Marketing', 'Sponsorships'],
-    keywords: ['operations', 'management', 'events', 'marketing', 'public relations', 'pr', 'sponsors', 'finance', 'budgeting', 'hosting', 'organizing'],
   },
   {
     name: 'Rahul Anand',
@@ -68,26 +63,12 @@ const MEMBERS: Member[] = [
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
     skills: ['Machine Learning', 'Python', 'TensorFlow', 'Neural Networks'],
-    keywords: ['machine learning', 'ai', 'python', 'tensorflow', 'neural networks', 'data science', 'ml', 'ai agents', 'analytics', 'deep learning'],
   },
-];
-
-const SUGGESTIONS = [
-  { text: 'AI Agent', icon: '🤖' },
-  { text: 'React Web App', icon: '💻' },
-  { text: 'Figma UI Design', icon: '🎨' },
-  { text: 'PR & Event Hosting', icon: '📢' },
-  { text: 'Python Data Model', icon: '🐍' },
 ];
 
 export default function TeamShowcase() {
   const [activeTab, setActiveTab] = useState<'all' | 'technical' | 'creatives' | 'operations'>('all');
   const [viewMode, setViewMode] = useState<'grid' | 'graph'>('grid');
-  
-  // Predictive search states
-  const [searchQuery, setSearchQuery] = useState('');
-  const [matchedMember, setMatchedMember] = useState<Member | null>(null);
-  const [matchScore, setMatchScore] = useState(0);
 
   // Selected node profile display inside Graph view
   const [selectedGraphMember, setSelectedGraphMember] = useState<Member | null>(null);
@@ -166,49 +147,6 @@ export default function TeamShowcase() {
     }
   }, [activeTab, viewMode]);
 
-  // Predictive Matching Engine Calculation
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    if (!query.trim()) {
-      setMatchedMember(null);
-      setMatchScore(0);
-      return;
-    }
-
-    const searchWords = query.toLowerCase().split(/\s+/);
-    let bestMatch: Member | null = null;
-    let highestScore = 0;
-
-    MEMBERS.forEach(m => {
-      let score = 0;
-      if (!m.keywords) return;
-
-      searchWords.forEach(word => {
-        // Multi-point match calculation
-        m.keywords!.forEach(kw => {
-          if (kw.includes(word) || word.includes(kw)) {
-            score += 15;
-          }
-        });
-      });
-
-      if (score > highestScore) {
-        highestScore = score;
-        bestMatch = m;
-      }
-    });
-
-    if (bestMatch && highestScore > 0) {
-      // Map score value between 72% and 98%
-      const finalScore = Math.min(72 + highestScore, 98);
-      setMatchedMember(bestMatch);
-      setMatchScore(finalScore);
-    } else {
-      setMatchedMember(null);
-      setMatchScore(0);
-    }
-  };
-
   const president = MEMBERS.find(m => m.domain === 'presidency')!;
   
   // Filter other members (excluding president from the category list display)
@@ -221,82 +159,6 @@ export default function TeamShowcase() {
 
   return (
     <div className="team-component-wrapper">
-      
-      {/* 1. Predictive Networking Engine (Search Console) */}
-      <div className="predictive-engine-box">
-        <div className="engine-header">
-          <span className="engine-prompt-indicator">&gt;_ predictive_match_engine --analyze</span>
-          <h2 className="engine-title">What do you want to build?</h2>
-        </div>
-        
-        <div className="engine-main-row">
-          <div className="engine-input-col">
-            <div className="input-input-wrapper">
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => handleSearch(e.target.value)}
-                placeholder="Type your skills, tech stack, or ideas... (e.g. AI bot, Web Portal, Figma Design)"
-                className="engine-search-input"
-              />
-              {searchQuery && (
-                <button className="input-clear-btn" onClick={() => handleSearch('')}>×</button>
-              )}
-            </div>
-            
-            <div className="engine-suggestions-row">
-              <span className="suggestions-label">Try:</span>
-              {SUGGESTIONS.map(s => (
-                <button
-                  key={s.text}
-                  onClick={() => handleSearch(s.text)}
-                  className="suggestion-tag-btn"
-                >
-                  <span className="tag-icon">{s.icon}</span> {s.text}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {/* Results Match recommendation container */}
-          {matchedMember && (
-            <div className="engine-result-card-container">
-              <div className="engine-result-card">
-                <div className="result-score-glow" style={{
-                  color: matchedMember.domain === 'technical' ? '#eab308' :
-                         matchedMember.domain === 'creatives' ? '#c084fc' :
-                         matchedMember.domain === 'operations' ? '#00f2fe' : '#1dd1a1'
-                }}>
-                  {matchScore}% COMPATIBILITY MATCH
-                </div>
-                
-                <div className="result-profile-row">
-                  <img src={matchedMember.image} alt={matchedMember.name} className="result-avatar" />
-                  <div className="result-details">
-                    <h4>{matchedMember.name}</h4>
-                    <p className="result-role">{matchedMember.role}</p>
-                    <div className="result-skills-row">
-                      {matchedMember.skills?.slice(0, 2).map(s => (
-                        <span key={s} className="result-skill-badge">{s}</span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-
-                <div className="result-actions-row">
-                  <a href={matchedMember.linkedin} target="_blank" rel="noopener noreferrer" className="result-action-btn">
-                    LinkedIn
-                  </a>
-                  <a href={matchedMember.email} className="result-action-btn email-action-btn">
-                    Connect
-                  </a>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
       {/* Toolbar view selectors */}
       <div className="team-toolbar-controls">
         <div className="view-mode-toggles">
@@ -496,259 +358,6 @@ export default function TeamShowcase() {
           align-items: center;
           position: relative;
           z-index: 10;
-        }
-
-        /* 1. Predictive Networking Engine styling */
-        .predictive-engine-box {
-          width: 100%;
-          background: rgba(17, 23, 20, 0.45);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 20px;
-          padding: 28px;
-          margin-bottom: 40px;
-          backdrop-filter: blur(16px);
-          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
-          text-align: left;
-        }
-
-        .engine-header {
-          margin-bottom: 20px;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-          padding-bottom: 12px;
-        }
-
-        .engine-prompt-indicator {
-          font-family: 'Courier New', Courier, monospace;
-          color: #1dd1a1;
-          font-size: 11px;
-          font-weight: 600;
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-        }
-
-        .engine-title {
-          font-family: 'Inter', sans-serif;
-          font-size: 1.6rem;
-          font-weight: 500;
-          color: #e8ede9;
-          margin-top: 4px;
-          letter-spacing: -0.02em;
-        }
-
-        .engine-main-row {
-          display: flex;
-          gap: 32px;
-          align-items: stretch;
-          width: 100%;
-        }
-
-        .engine-input-col {
-          flex: 1.3;
-          display: flex;
-          flex-direction: column;
-          justify-content: center;
-        }
-
-        .input-input-wrapper {
-          position: relative;
-          width: 100%;
-          display: flex;
-          align-items: center;
-        }
-
-        .engine-search-input {
-          width: 100%;
-          background: rgba(8, 13, 11, 0.7);
-          border: 1px solid rgba(255, 255, 255, 0.12);
-          border-radius: 12px;
-          padding: 14px 44px 14px 18px;
-          font-family: 'Inter', sans-serif;
-          font-size: 14px;
-          color: #e8ede9;
-          transition: border-color 0.3s, box-shadow 0.3s;
-        }
-
-        .engine-search-input:focus {
-          outline: none;
-          border-color: #1dd1a1;
-          box-shadow: 0 0 16px rgba(29, 209, 161, 0.15);
-        }
-
-        .input-clear-btn {
-          position: absolute;
-          right: 14px;
-          background: transparent;
-          border: none;
-          color: var(--text-muted);
-          font-size: 20px;
-          cursor: pointer;
-          transition: color 0.2s;
-        }
-
-        .input-clear-btn:hover {
-          color: #e8ede9;
-        }
-
-        .engine-suggestions-row {
-          display: flex;
-          align-items: center;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-top: 14px;
-        }
-
-        .suggestions-label {
-          font-family: 'Inter', sans-serif;
-          font-size: 11.5px;
-          color: var(--text-muted);
-          margin-right: 6px;
-        }
-
-        .suggestion-tag-btn {
-          background: rgba(232, 237, 233, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.08);
-          border-radius: 20px;
-          padding: 5px 12px;
-          font-family: 'Inter', sans-serif;
-          font-size: 11px;
-          color: var(--text-muted);
-          cursor: pointer;
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          transition: border-color 0.25s, color 0.25s, background-color 0.25s;
-        }
-
-        .suggestion-tag-btn:hover {
-          border-color: #1dd1a1;
-          color: #e8ede9;
-          background-color: rgba(29, 209, 161, 0.05);
-        }
-
-        /* Results Card */
-        .engine-result-card-container {
-          flex: 1;
-          display: flex;
-          animation: resultSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-        }
-
-        .engine-result-card {
-          width: 100%;
-          background: rgba(8, 13, 11, 0.85);
-          border: 1px solid rgba(29, 209, 161, 0.25);
-          border-radius: 14px;
-          padding: 18px;
-          box-shadow: 0 8px 32px rgba(29, 209, 161, 0.08);
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-        }
-
-        .result-score-glow {
-          font-family: 'Inter', sans-serif;
-          font-size: 10px;
-          font-weight: 700;
-          letter-spacing: 0.08em;
-          text-shadow: 0 0 10px currentColor;
-          margin-bottom: 12px;
-        }
-
-        .result-profile-row {
-          display: flex;
-          gap: 14px;
-          align-items: center;
-          margin-bottom: 16px;
-        }
-
-        .result-avatar {
-          width: 52px;
-          height: 52px;
-          border-radius: 50%;
-          object-fit: cover;
-          border: 1.5px solid rgba(255, 255, 255, 0.15);
-          background-color: #0b110f;
-        }
-
-        .result-details h4 {
-          font-family: 'Inter', sans-serif;
-          font-size: 14px;
-          font-weight: 600;
-          color: #e8ede9;
-          margin-bottom: 2px;
-        }
-
-        .result-role {
-          font-family: 'Inter', sans-serif;
-          font-size: 10.5px;
-          color: #1dd1a1;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-          margin-bottom: 6px;
-        }
-
-        .result-skills-row {
-          display: flex;
-          gap: 6px;
-        }
-
-        .result-skill-badge {
-          font-size: 9px;
-          color: var(--text-muted);
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.06);
-          padding: 2px 6px;
-          border-radius: 4px;
-        }
-
-        .result-actions-row {
-          display: flex;
-          gap: 10px;
-        }
-
-        .result-action-btn {
-          flex: 1;
-          text-align: center;
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.1);
-          color: #e8ede9;
-          font-family: 'Inter', sans-serif;
-          font-size: 11.5px;
-          font-weight: 500;
-          padding: 8px 0;
-          border-radius: 6px;
-          cursor: pointer;
-          text-decoration: none;
-          transition: background-color 0.25s, border-color 0.25s, color 0.25s;
-        }
-
-        .result-action-btn:hover {
-          background: rgba(255, 255, 255, 0.08);
-          border-color: rgba(255, 255, 255, 0.2);
-        }
-
-        .email-action-btn {
-          background: #ffffff;
-          color: #080d0b;
-          border: none;
-        }
-
-        .email-action-btn:hover {
-          background: #e8ede9;
-          color: #080d0b;
-        }
-
-        @keyframes resultSlideIn {
-          0% { opacity: 0; transform: translateY(12px) scale(0.98); }
-          100% { opacity: 1; transform: translateY(0) scale(1); }
-        }
-
-        @media (max-width: 800px) {
-          .engine-main-row {
-            flex-direction: column;
-          }
-          .engine-result-card-container {
-            width: 100%;
-          }
         }
 
         /* View Mode Controls Toolbar */
