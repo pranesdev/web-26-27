@@ -50,7 +50,7 @@ const MEMBERS: Member[] = [
   },
   {
     name: 'Rahul Anand',
-    role: 'Machine Learning Member',
+    role: 'Machine Learning',
     domain: 'technical',
     image: '/team/rahul-anand.png',
     github: 'https://github.com',
