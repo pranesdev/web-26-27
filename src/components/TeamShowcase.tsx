@@ -164,7 +164,7 @@ export default function TeamShowcase() {
               ref={presidentCardRef}
               className="team-card-wrapper president-card-wrapper"
             >
-              {/* Darker dynamic domain glow spotlight behind card */}
+              {/* Brighter dynamic domain glow spotlight behind card */}
               <div className="card-hover-glow-spotlight spotlight-presidency" />
               
               <div className="team-member-card president-member-card">
@@ -211,7 +211,7 @@ export default function TeamShowcase() {
               ref={(el) => { cardsRefs.current[idx] = el; }}
               className="team-card-wrapper"
             >
-              {/* Darker dynamic domain glow spotlight behind card */}
+              {/* Brighter dynamic domain glow spotlight behind card */}
               <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
 
               {/* Card Body */}
@@ -361,36 +361,36 @@ export default function TeamShowcase() {
           perspective: 1000px;
         }
 
-        /* Dynamic Domain Glow Spotlights (Much darker & subtler) */
+        /* Dynamic Domain Glow Spotlights (Vibrant & highly visible) */
         .card-hover-glow-spotlight {
           position: absolute;
-          inset: -30px;
+          inset: -40px;
           opacity: 0;
-          filter: blur(40px);
+          filter: blur(45px);
           transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 1;
           pointer-events: none;
           border-radius: 40px;
-          transform: scale(0.8);
+          transform: scale(0.85);
         }
 
         .team-card-wrapper:hover .card-hover-glow-spotlight,
         .president-card-wrapper:hover .card-hover-glow-spotlight {
-          opacity: 0.65; /* capped max opacity */
+          opacity: 1.0; /* Full opacity on hover */
           transform: scale(1.15) translateZ(-15px);
         }
 
         .spotlight-presidency {
-          background: radial-gradient(circle, rgba(29, 209, 161, 0.08) 0%, rgba(29, 209, 161, 0) 70%);
+          background: radial-gradient(circle, rgba(29, 209, 161, 0.4) 0%, rgba(29, 209, 161, 0) 70%);
         }
         .spotlight-technical {
-          background: radial-gradient(circle, rgba(0, 242, 254, 0.08) 0%, rgba(0, 242, 254, 0) 70%);
+          background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0, 242, 254, 0) 70%);
         }
         .spotlight-creatives {
-          background: radial-gradient(circle, rgba(168, 85, 247, 0.08) 0%, rgba(168, 85, 247, 0) 70%);
+          background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(168, 85, 247, 0) 70%);
         }
         .spotlight-operations {
-          background: radial-gradient(circle, rgba(234, 179, 8, 0.08) 0%, rgba(234, 179, 8, 0) 70%);
+          background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(234, 179, 8, 0) 70%);
         }
 
         /* The Member Card */
