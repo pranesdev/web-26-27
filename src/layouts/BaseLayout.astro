@@ -16,7 +16,18 @@ const { title, description } = Astro.props;
   <meta name="description" content={description || "Developer Students Club (DSC) at SRM IST Ramapuram — Building the Developers of Tomorrow. Join our community of passionate student developers."}>
   <meta name="keywords" content="DSC, Developer Students Club, SRM IST, Ramapuram, coding, hackathon, workshops, student developers">
   <title>{title || "Developer Students Club | SRM IST Ramapuram"}</title>
-  <link rel="icon" type="image/png" href="/creative-ai/image2-removebg-preview.png">
+  <link rel="icon" type="image/webp" href="/creative-ai/image2-removebg-preview.webp">
+
+  <!-- Async font loading: preconnect first, then non-blocking stylesheet -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@1,400;1,500;1,600&display=swap"></noscript>
+  <!-- Preload fonts to eliminate critical request chain -->
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/inter/v20/UcC73FwrK3iLTeHuS_nVMrMxCp50SjIa1ZL7W0Q5nw.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="https://fonts.gstatic.com/s/playfairdisplay/v40/nuFkD-vYSZviVYUb_rj3ij__anPXDTnogkk7yRZrPA.woff2">
+  <!-- LCP image preload: kick off hero background fetch before CSS is parsed -->
+  <link rel="preload" as="image" fetchpriority="high" href="/creative-ai/hero_bg1.webp">
 </head>
 <body>
   <slot />

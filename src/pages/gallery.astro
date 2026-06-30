@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header';
 import CardCarousel from '../components/CardCarousel';
 ---
 
@@ -24,11 +25,10 @@ import CardCarousel from '../components/CardCarousel';
       white-space: nowrap;
       z-index: 150;
       border-bottom: 1px solid rgba(255,255,255,0.1);
-      font-family: 'Inter', sans-serif;
     }
     .dsc-marquee-content {
       display: flex;
-      animation: dsc-marquee 45s linear infinite;
+      animation: dsc-marquee 30s linear infinite;
     }
     .dsc-marquee-item {
       display: flex;
@@ -42,75 +42,6 @@ import CardCarousel from '../components/CardCarousel';
       color: #14a3a3;
       margin: 0 32px;
       font-size: 14px;
-    }
-
-    /* Header specific styles */
-    .team-header {
-      position: absolute;
-      top: 40px;
-      left: 0;
-      right: 0;
-      z-index: 100;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px;
-      pointer-events: none;
-      font-family: 'Inter', sans-serif;
-    }
-    
-    .team-header-nav {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 100;
-      background: rgba(255,255,255,0.2);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border: 1px solid rgba(255,255,255,0.3);
-      border-radius: 9999px;
-      padding: 8px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      pointer-events: auto;
-    }
-
-    .team-header-nav a {
-      padding: 6px 16px;
-      border-radius: 9999px;
-      font-size: 14px;
-      font-weight: 500;
-      text-decoration: none;
-      transition: background 0.2s, color 0.2s;
-      color: rgba(255,255,255,0.8);
-    }
-
-    .team-header-nav a:hover, .team-header-nav a.active {
-      background: rgba(255,255,255,0.2);
-      color: #fff;
-    }
-
-    .team-header-cta {
-      background: #fff;
-      color: #111827;
-      font-size: 14px;
-      font-weight: 600;
-      padding: 10px 24px;
-      border-radius: 9999px;
-      text-decoration: none;
-      transition: background 0.2s;
-    }
-
-    .team-header-cta:hover {
-      background: #f3f4f6;
-    }
-
-    @media (max-width: 768px) {
-      .team-header-nav { display: none; }
-      .team-header-cta { display: none; }
-      .team-mobile-menu-btn { display: flex !important; }
     }
   </style>
 
@@ -131,31 +62,7 @@ import CardCarousel from '../components/CardCarousel';
     </div>
   </div>
 
-  <header class="team-header">
-    <a href="/" style="display: flex; align-items: center; gap: 8px; color: #fff; text-decoration: none; pointer-events: auto;">
-      <img src="/creative-ai/club logo.png" alt="DSC Logo" style="height: 80px; object-fit: contain; transform: translateY(-10px);">
-    </a>
-
-    <nav class="team-header-nav">
-      <a href="/">Home</a>
-      <a href="/about">About</a>
-      <a href="/#domains">Domains</a>
-      <a href="/gallery" class="active">Gallery</a>
-      <a href="/team">Team</a>
-      <a href="/contact">Contact</a>
-    </nav>
-
-    <div style="display: flex; align-items: center; pointer-events: auto;">
-      <a href="#" class="team-header-cta">Join Us</a>
-      <button class="team-mobile-menu-btn" style="display: none; background: none; border: none; cursor: pointer; margin-left: 16px;">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <line x1="4" x2="20" y1="12" y2="12"></line>
-          <line x1="4" x2="20" y1="6" y2="6"></line>
-          <line x1="4" x2="20" y1="18" y2="18"></line>
-        </svg>
-      </button>
-    </div>
-  </header>
+  <Header client:load active="gallery" />
 
   <!-- ========== REACT CAROUSEL SECTION ========== -->
   <section id="react-carousel-root" style="width: 100vw; height: 100vh; overflow: hidden;">
