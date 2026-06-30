@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import TeamNetworkGraph from './TeamNetworkGraph';
 
@@ -72,6 +72,10 @@ export default function TeamShowcase() {
 
   // Selected node profile display inside Graph view
   const [selectedGraphMember, setSelectedGraphMember] = useState<Member | null>(null);
+
+  const handleSelectMember = useCallback((member: Member | null) => {
+    setSelectedGraphMember(member);
+  }, []);
 
   const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
   const presidentCardRef = useRef<HTMLDivElement>(null);
@@ -298,7 +302,7 @@ export default function TeamShowcase() {
       ) : (
         /* Render Interactive Network Canvas Graph view */
         <div className="graph-view-wrapper">
-          <TeamNetworkGraph onSelectMember={(member) => setSelectedGraphMember(member)} />
+          <TeamNetworkGraph onSelectMember={handleSelectMember} />
 
           {/* Highlight card detail panel when clicking graph node */}
           {selectedGraphMember ? (

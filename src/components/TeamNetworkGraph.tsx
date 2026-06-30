@@ -96,6 +96,10 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [hoveredNode, setHoveredNode] = useState<Node | null>(null);
   
+  // Persistent refs to preserve nodes and links state across component re-renders
+  const nodesRef = useRef<Node[] | null>(null);
+  const linksRef = useRef<Link[] | null>(null);
+
   // Pre-load images to draw on canvas
   const imagesCache = useRef<Record<string, HTMLImageElement>>({});
 
@@ -128,236 +132,241 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
       creatives: '#c084fc',   // Purple
     };
 
-    // Construct the nodes list matching requested tree hierarchy
-    let nodes: Node[] = [
-      // Root: President
-      {
-        id: 'president',
-        label: 'Karthik Rajan',
-        role: 'President',
-        domain: 'presidency',
-        type: 'president',
-        visible: true,
-        x: width / 2,
-        y: height / 2 - 40,
-        vx: 0,
-        vy: 0,
-        radius: 40,
-        color: colors.presidency,
-        memberRef: MEMBERS_DATA[0],
-      },
-      // Leads (Connected directly to president)
-      {
-        id: 'aditya',
-        label: 'Aditya Kumar',
-        role: 'Technical Lead',
-        domain: 'technical',
-        type: 'lead',
-        parentId: 'president',
-        visible: true,
-        expanded: false,
-        x: width / 2 - 180,
-        y: height / 2 + 80,
-        vx: 0,
-        vy: 0,
-        radius: 34,
-        color: colors.technical,
-        memberRef: MEMBERS_DATA[1],
-      },
-      {
-        id: 'deepika',
-        label: 'Deepika Menon',
-        role: 'Creatives Lead',
-        domain: 'creatives',
-        type: 'lead',
-        parentId: 'president',
-        visible: true,
-        expanded: false,
-        x: width / 2,
-        y: height / 2 - 170,
-        vx: 0,
-        vy: 0,
-        radius: 34,
-        color: colors.creatives,
-        memberRef: MEMBERS_DATA[2],
-      },
-      {
-        id: 'sneha',
-        label: 'Sneha Patel',
-        role: 'Operations Lead',
-        domain: 'operations',
-        type: 'lead',
-        parentId: 'president',
-        visible: true,
-        expanded: false,
-        x: width / 2 + 180,
-        y: height / 2 + 80,
-        vx: 0,
-        vy: 0,
-        radius: 34,
-        color: colors.operations,
-        memberRef: MEMBERS_DATA[3],
-      },
-      // Technical Subdomains (connect to aditya)
-      {
-        id: 'sub_ml',
-        label: 'Machine Learning',
-        role: 'Subdomain Hub',
-        domain: 'technical',
-        type: 'subdomain',
-        parentId: 'aditya',
-        visible: false,
-        expanded: false,
-        x: width / 2 - 250,
-        y: height / 2 + 150,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.technical,
-      },
-      {
-        id: 'sub_web',
-        label: 'Web Dev',
-        role: 'Subdomain Hub',
-        domain: 'technical',
-        type: 'subdomain',
-        parentId: 'aditya',
-        visible: false,
-        expanded: false,
-        x: width / 2 - 120,
-        y: height / 2 + 150,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.technical,
-      },
-      {
-        id: 'sub_app',
-        label: 'App Dev',
-        role: 'Subdomain Hub',
-        domain: 'technical',
-        type: 'subdomain',
-        parentId: 'aditya',
-        visible: false,
-        expanded: false,
-        x: width / 2 - 180,
-        y: height / 2 + 200,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.technical,
-      },
-      // Creatives Subdomains (connect to deepika)
-      {
-        id: 'sub_design',
-        label: 'Design',
-        role: 'Subdomain Hub',
-        domain: 'creatives',
-        type: 'subdomain',
-        parentId: 'deepika',
-        visible: false,
-        expanded: false,
-        x: width / 2 - 80,
-        y: height / 2 - 230,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.creatives,
-      },
-      {
-        id: 'sub_content',
-        label: 'Content',
-        role: 'Subdomain Hub',
-        domain: 'creatives',
-        type: 'subdomain',
-        parentId: 'deepika',
-        visible: false,
-        expanded: false,
-        x: width / 2 + 80,
-        y: height / 2 - 230,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.creatives,
-      },
-      // Operations Subdomains (connect to sneha)
-      {
-        id: 'sub_mgmt',
-        label: 'Management',
-        role: 'Subdomain Hub',
-        domain: 'operations',
-        type: 'subdomain',
-        parentId: 'sneha',
-        visible: false,
-        expanded: false,
-        x: width / 2 + 120,
-        y: height / 2 + 150,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.operations,
-      },
-      {
-        id: 'sub_mktg',
-        label: 'Marketing',
-        role: 'Subdomain Hub',
-        domain: 'operations',
-        type: 'subdomain',
-        parentId: 'sneha',
-        visible: false,
-        expanded: false,
-        x: width / 2 + 250,
-        y: height / 2 + 150,
-        vx: 0,
-        vy: 0,
-        radius: 20,
-        color: colors.operations,
-      },
-      // Members (Visible only when respective Subdomain is expanded)
-      {
-        id: 'rahul',
-        label: 'Rahul Anand',
-        role: 'Machine Learning',
-        domain: 'technical',
-        type: 'member',
-        parentId: 'sub_ml',
-        visible: false,
-        x: width / 2 - 320,
-        y: height / 2 + 220,
-        vx: 0,
-        vy: 0,
-        radius: 28,
-        color: colors.technical,
-        memberRef: MEMBERS_DATA[4],
-      },
-    ];
+    // Initialize nodes only once
+    if (!nodesRef.current) {
+      nodesRef.current = [
+        // Root: President
+        {
+          id: 'president',
+          label: 'Karthik Rajan',
+          role: 'President',
+          domain: 'presidency',
+          type: 'president',
+          visible: true,
+          x: width / 2,
+          y: height / 2 - 40,
+          vx: 0,
+          vy: 0,
+          radius: 40,
+          color: colors.presidency,
+          memberRef: MEMBERS_DATA[0],
+        },
+        // Leads (Connected directly to president)
+        {
+          id: 'aditya',
+          label: 'Aditya Kumar',
+          role: 'Technical Lead',
+          domain: 'technical',
+          type: 'lead',
+          parentId: 'president',
+          visible: true,
+          expanded: false,
+          x: width / 2 - 180,
+          y: height / 2 + 80,
+          vx: 0,
+          vy: 0,
+          radius: 34,
+          color: colors.technical,
+          memberRef: MEMBERS_DATA[1],
+        },
+        {
+          id: 'deepika',
+          label: 'Deepika Menon',
+          role: 'Creatives Lead',
+          domain: 'creatives',
+          type: 'lead',
+          parentId: 'president',
+          visible: true,
+          expanded: false,
+          x: width / 2,
+          y: height / 2 - 170,
+          vx: 0,
+          vy: 0,
+          radius: 34,
+          color: colors.creatives,
+          memberRef: MEMBERS_DATA[2],
+        },
+        {
+          id: 'sneha',
+          label: 'Sneha Patel',
+          role: 'Operations Lead',
+          domain: 'operations',
+          type: 'lead',
+          parentId: 'president',
+          visible: true,
+          expanded: false,
+          x: width / 2 + 180,
+          y: height / 2 + 80,
+          vx: 0,
+          vy: 0,
+          radius: 34,
+          color: colors.operations,
+          memberRef: MEMBERS_DATA[3],
+        },
+        // Technical Subdomains (connect to aditya)
+        {
+          id: 'sub_ml',
+          label: 'Machine Learning',
+          role: 'Subdomain Hub',
+          domain: 'technical',
+          type: 'subdomain',
+          parentId: 'aditya',
+          visible: false,
+          expanded: false,
+          x: width / 2 - 250,
+          y: height / 2 + 150,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.technical,
+        },
+        {
+          id: 'sub_web',
+          label: 'Web Dev',
+          role: 'Subdomain Hub',
+          domain: 'technical',
+          type: 'subdomain',
+          parentId: 'aditya',
+          visible: false,
+          expanded: false,
+          x: width / 2 - 120,
+          y: height / 2 + 150,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.technical,
+        },
+        {
+          id: 'sub_app',
+          label: 'App Dev',
+          role: 'Subdomain Hub',
+          domain: 'technical',
+          type: 'subdomain',
+          parentId: 'aditya',
+          visible: false,
+          expanded: false,
+          x: width / 2 - 180,
+          y: height / 2 + 200,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.technical,
+        },
+        // Creatives Subdomains (connect to deepika)
+        {
+          id: 'sub_design',
+          label: 'Design',
+          role: 'Subdomain Hub',
+          domain: 'creatives',
+          type: 'subdomain',
+          parentId: 'deepika',
+          visible: false,
+          expanded: false,
+          x: width / 2 - 80,
+          y: height / 2 - 230,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.creatives,
+        },
+        {
+          id: 'sub_content',
+          label: 'Content',
+          role: 'Subdomain Hub',
+          domain: 'creatives',
+          type: 'subdomain',
+          parentId: 'deepika',
+          visible: false,
+          expanded: false,
+          x: width / 2 + 80,
+          y: height / 2 - 230,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.creatives,
+        },
+        // Operations Subdomains (connect to sneha)
+        {
+          id: 'sub_mgmt',
+          label: 'Management',
+          role: 'Subdomain Hub',
+          domain: 'operations',
+          type: 'subdomain',
+          parentId: 'sneha',
+          visible: false,
+          expanded: false,
+          x: width / 2 + 120,
+          y: height / 2 + 150,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.operations,
+        },
+        {
+          id: 'sub_mktg',
+          label: 'Marketing',
+          role: 'Subdomain Hub',
+          domain: 'operations',
+          type: 'subdomain',
+          parentId: 'sneha',
+          visible: false,
+          expanded: false,
+          x: width / 2 + 250,
+          y: height / 2 + 150,
+          vx: 0,
+          vy: 0,
+          radius: 20,
+          color: colors.operations,
+        },
+        // Members (Visible only when respective Subdomain is expanded)
+        {
+          id: 'rahul',
+          label: 'Rahul Anand',
+          role: 'Machine Learning',
+          domain: 'technical',
+          type: 'member',
+          parentId: 'sub_ml',
+          visible: false,
+          x: width / 2 - 320,
+          y: height / 2 + 220,
+          vx: 0,
+          vy: 0,
+          radius: 28,
+          color: colors.technical,
+          memberRef: MEMBERS_DATA[4],
+        },
+      ];
+    }
 
-    // Links mappings
-    let links: Link[] = [
-      // President to leads
-      { source: 'president', target: 'aditya', visible: true },
-      { source: 'president', target: 'deepika', visible: true },
-      { source: 'president', target: 'sneha', visible: true },
-      // Technical Lead to its subdomains
-      { source: 'aditya', target: 'sub_ml', visible: false },
-      { source: 'aditya', target: 'sub_web', visible: false },
-      { source: 'aditya', target: 'sub_app', visible: false },
-      // Creatives Lead to its subdomains
-      { source: 'deepika', target: 'sub_design', visible: false },
-      { source: 'deepika', target: 'sub_content', visible: false },
-      // Operations Lead to its subdomains
-      { source: 'sneha', target: 'sub_mgmt', visible: false },
-      { source: 'sneha', target: 'sub_mktg', visible: false },
-      // Subdomains to members
-      { source: 'sub_ml', target: 'rahul', visible: false },
-    ];
+    // Initialize links only once
+    if (!linksRef.current) {
+      linksRef.current = [
+        // President to leads
+        { source: 'president', target: 'aditya', visible: true },
+        { source: 'president', target: 'deepika', visible: true },
+        { source: 'president', target: 'sneha', visible: true },
+        // Technical Lead to its subdomains
+        { source: 'aditya', target: 'sub_ml', visible: false },
+        { source: 'aditya', target: 'sub_web', visible: false },
+        { source: 'aditya', target: 'sub_app', visible: false },
+        // Creatives Lead to its subdomains
+        { source: 'deepika', target: 'sub_design', visible: false },
+        { source: 'deepika', target: 'sub_content', visible: false },
+        // Operations Lead to its subdomains
+        { source: 'sneha', target: 'sub_mgmt', visible: false },
+        { source: 'sneha', target: 'sub_mktg', visible: false },
+        // Subdomains to members
+        { source: 'sub_ml', target: 'rahul', visible: false },
+      ];
+    }
+
+    const nodes = nodesRef.current;
+    const links = linksRef.current;
 
     let draggedNode: Node | null = null;
     let mouseOffset = { x: 0, y: 0 };
-    let startDragX = 0; // Fix click detection
+    let startDragX = 0;
     let startDragY = 0;
-    
-    // Store drag history for throw velocity calculation
     let prevMouseX = 0;
     let prevMouseY = 0;
 
@@ -456,7 +465,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         draggedNode.x = mx + mouseOffset.x;
         draggedNode.y = my + mouseOffset.y;
         
-        // Track velocities while dragging to throw on release
         draggedNode.vx = mx - prevMouseX;
         draggedNode.vy = my - prevMouseY;
         
@@ -484,13 +492,11 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
         
-        // Measure real drag distance relative to down coordinates
         const dx = mx - startDragX;
         const dy = my - startDragY;
         const dragDist = Math.sqrt(dx * dx + dy * dy);
 
         if (dragDist < 5) {
-          // Trigger click actions ONLY if not dragged
           if (draggedNode.type === 'lead' || draggedNode.type === 'subdomain') {
             toggleNode(draggedNode);
           }
