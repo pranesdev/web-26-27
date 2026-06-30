@@ -28,14 +28,14 @@ export default function ContactWatermark() {
       <div
         className="contact-watermark-wrapper"
         style={{
-          transform: `translateX(-50%) translate3d(${shiftX}px, ${shiftY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+          transform: `translate3d(${shiftX}px, ${shiftY}px, 0) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
           transition: 'transform 0.25s cubic-bezier(0.1, 0.8, 0.2, 1)',
           transformStyle: 'preserve-3d',
           perspective: 800,
           willChange: 'transform',
           position: 'absolute',
           top: 'var(--watermark-offset)',
-          left: '50%',
+          left: 0,
           width: '100%',
           zIndex: 0,
           pointerEvents: 'none',
