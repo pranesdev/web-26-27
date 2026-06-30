@@ -1,9 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 interface Member {
   name: string;
   role: string;
+  domain: 'leadership' | 'technical' | 'creatives' | 'operations';
+  subdomains: string[];
   image: string;
   github: string;
   linkedin: string;
@@ -13,7 +15,9 @@ interface Member {
 const MEMBERS: Member[] = [
   {
     name: 'Karthik Rajan',
-    role: 'President',
+    role: 'Main President',
+    domain: 'leadership',
+    subdomains: ['President', 'Club Oversight'],
     image: '/team/karthik-rajan.png',
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
@@ -22,6 +26,8 @@ const MEMBERS: Member[] = [
   {
     name: 'Nithya Srinivasan',
     role: 'Vice President',
+    domain: 'leadership',
+    subdomains: ['Vice President', 'Operations Support'],
     image: '/team/nithya-srinivasan.png',
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
@@ -29,7 +35,9 @@ const MEMBERS: Member[] = [
   },
   {
     name: 'Aditya Kumar',
-    role: 'Technical Lead',
+    role: 'Technical Domain Lead',
+    domain: 'technical',
+    subdomains: ['Web Dev', 'App Dev', 'Competitive Programming', 'Cloud Computing'],
     image: '/team/aditya-kumar.png',
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
@@ -37,8 +45,20 @@ const MEMBERS: Member[] = [
   },
   {
     name: 'Deepika Menon',
-    role: 'Design Lead',
+    role: 'Creatives Domain Lead',
+    domain: 'creatives',
+    subdomains: ['Design', 'Content writing', 'Video Editing', 'Photography'],
     image: '/team/deepika-menon.png',
+    github: 'https://github.com',
+    linkedin: 'https://linkedin.com',
+    email: 'mailto:dsc.srmrmp@gmail.com',
+  },
+  {
+    name: 'Sneha Patel',
+    role: 'Operations Domain Lead',
+    domain: 'operations',
+    subdomains: ['Management', 'Marketing', 'Public Relations'],
+    image: '/team/sneha-patel.png',
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
@@ -46,23 +66,56 @@ const MEMBERS: Member[] = [
   {
     name: 'Rahul Anand',
     role: 'AI / ML Lead',
+    domain: 'technical',
+    subdomains: ['Machine Learning', 'Data Analytics'],
     image: '/team/rahul-anand.png',
-    github: 'https://github.com',
-    linkedin: 'https://linkedin.com',
-    email: 'mailto:dsc.srmrmp@gmail.com',
-  },
-  {
-    name: 'Sneha Patel',
-    role: 'PR & Outreach Lead',
-    image: '/team/sneha-patel.png',
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
   },
 ];
 
+const DOMAINS_DATA = [
+  {
+    key: 'technical',
+    title: 'TECHNICAL',
+    tagline: 'Build, break, and innovate with tech that makes a difference.',
+    subdomains: [
+      { name: 'Web Dev', desc: 'Build dynamic & responsive websites.' },
+      { name: 'App Dev', desc: 'Create sleek Android/iOS applications.' },
+      { name: 'Competitive Programming', desc: 'Sharpen problem-solving coding skills.' },
+      { name: 'Machine Learning', desc: 'Teach machines to think with real datasets.' },
+      { name: 'Data Analytics', desc: 'Transform raw data into insights.' },
+      { name: 'Cloud Computing', desc: 'Deploy scalable infrastructure.' }
+    ]
+  },
+  {
+    key: 'creatives',
+    title: 'CREATIVES',
+    tagline: 'Craft stories, visuals, and experiences that spark emotion.',
+    subdomains: [
+      { name: 'Design', desc: 'Craft eye-catching visuals in form of posters and logos.' },
+      { name: 'Content', desc: 'Weave stories, captions and scripts that resonate.' },
+      { name: 'Video Editing', desc: 'Create visually compelling videos and reels.' },
+      { name: 'Photography', desc: 'Capture events and tell visual stories.' }
+    ]
+  },
+  {
+    key: 'operations',
+    title: 'OPERATIONS',
+    tagline: 'Plan, promote, and power every initiative to life.',
+    subdomains: [
+      { name: 'Management', desc: 'Organize the responsibilities and lead initiatives.' },
+      { name: 'Marketing', desc: 'Amplify reach with creative promotions through social media.' },
+      { name: 'Public Relations', desc: 'Build strong networks and partnerships for the community.' }
+    ]
+  }
+];
+
 export default function TeamShowcase() {
+  const [activeTab, setActiveTab] = useState<'all' | 'leadership' | 'technical' | 'creatives' | 'operations'>('all');
   const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Parallax card tilt on mouse move
@@ -73,8 +126,8 @@ export default function TeamShowcase() {
 
       const handleMouseMove = (e: MouseEvent) => {
         const rect = card.getBoundingClientRect();
-        const x = e.clientX - rect.left; // x coordinate within the element
-        const y = e.clientY - rect.top;  // y coordinate within the element
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
 
         const xc = rect.width / 2;
         const yc = rect.height / 2;
@@ -111,63 +164,182 @@ export default function TeamShowcase() {
         card.removeEventListener('mouseleave', handleMouseLeave);
       };
     });
-  }, []);
+  }, [activeTab]);
+
+  useEffect(() => {
+    // Fade elements in on tab filter switch
+    if (containerRef.current) {
+      gsap.fromTo(
+        containerRef.current.querySelectorAll('.team-card-wrapper'),
+        { opacity: 0, y: 16 },
+        { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }
+      );
+    }
+  }, [activeTab]);
+
+  const filteredMembers = activeTab === 'all' 
+    ? MEMBERS 
+    : MEMBERS.filter(m => m.domain === activeTab);
 
   return (
-    <div className="team-showcase-grid">
-      {MEMBERS.map((m, idx) => (
-        <div
-          key={m.name}
-          ref={(el) => { cardsRefs.current[idx] = el; }}
-          className="team-card-wrapper"
-        >
-          {/* Card Body */}
-          <div className="team-member-card">
-            {/* Image Container with organic cutout mask and grayscale filter */}
-            <div className="team-image-container">
-              <img src={m.image} alt={m.name} className="team-member-image" />
-              <div className="team-image-overlay" />
-              
-              {/* Overlay Social Icons Row */}
-              <div className="team-social-overlay-row">
-                <a href={m.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                  </svg>
-                </a>
-                <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                    <rect x="2" y="9" width="4" height="12" />
-                    <circle cx="4" cy="4" r="2" />
-                  </svg>
-                </a>
-                <a href={m.email} className="team-social-circle-btn" aria-label="Email">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                    <polyline points="22,6 12,13 2,6" />
-                  </svg>
-                </a>
+    <div className="team-component-wrapper">
+      {/* Category Navigation Tabs */}
+      <div className="team-filter-tabs">
+        {(['all', 'leadership', 'technical', 'creatives', 'operations'] as const).map(tab => (
+          <button
+            key={tab}
+            className={`team-tab-btn ${activeTab === tab ? 'active' : ''}`}
+            onClick={() => setActiveTab(tab)}
+          >
+            {tab}
+          </button>
+        ))}
+      </div>
+
+      {/* Grid of Team Cards */}
+      <div ref={containerRef} className="team-showcase-grid">
+        {filteredMembers.map((m, idx) => (
+          <div
+            key={m.name}
+            ref={(el) => { cardsRefs.current[idx] = el; }}
+            className="team-card-wrapper"
+          >
+            {/* Card Body */}
+            <div className="team-member-card">
+              {/* Image Container */}
+              <div className="team-image-container">
+                <img src={m.image} alt={m.name} className="team-member-image" />
+                <div className="team-image-overlay" />
+                
+                {/* Domain Tag */}
+                <div className={`team-card-domain-badge badge-${m.domain}`}>
+                  {m.domain}
+                </div>
+
+                {/* Overlay Social Icons Row */}
+                <div className="team-social-overlay-row">
+                  <a href={m.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                    </svg>
+                  </a>
+                  <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                      <rect x="2" y="9" width="4" height="12" />
+                      <circle cx="4" cy="4" r="2" />
+                    </svg>
+                  </a>
+                  <a href={m.email} className="team-social-circle-btn" aria-label="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {/* Info Section */}
+              <div className="team-member-info">
+                <h3>{m.name}</h3>
+                <p className="team-member-role">{m.role}</p>
+                <div className="team-member-subdomains">
+                  {m.subdomains.map(sub => (
+                    <span key={sub} className="team-subdomain-pill">{sub}</span>
+                  ))}
+                </div>
               </div>
             </div>
-
-            {/* Info Section */}
-            <div className="team-member-info">
-              <h3>{m.name}</h3>
-              <p className="team-member-role">{m.role}</p>
-            </div>
           </div>
+        ))}
+      </div>
+
+      {/* Domain and Subdomain Visualizer Grid */}
+      <div className="domains-visualizer-section">
+        <h2 className="domains-section-title">Our Operational Domains</h2>
+        <div className="domains-visualizer-grid">
+          {DOMAINS_DATA.map(domain => (
+            <div key={domain.key} className="domain-visual-card">
+              <div className="domain-card-glow-border" />
+              <div className="domain-visual-content">
+                <div className="domain-header">
+                  <span className={`domain-badge-bullet bullet-${domain.key}`} />
+                  <h3>{domain.title}</h3>
+                </div>
+                <p className="domain-tagline">{domain.tagline}</p>
+                
+                <div className="subdomains-list">
+                  {domain.subdomains.map(sub => (
+                    <div key={sub.name} className="subdomain-row-item">
+                      <div className="subdomain-bullet">
+                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5">
+                          <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                      </div>
+                      <div className="subdomain-details">
+                        <h4>{sub.name}</h4>
+                        <p>{sub.desc}</p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
+      </div>
       
       <style>{`
+        .team-component-wrapper {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        /* Filter Tabs */
+        .team-filter-tabs {
+          display: flex;
+          justify-content: center;
+          gap: 12px;
+          margin-bottom: 48px;
+          background: rgba(17, 23, 20, 0.4);
+          padding: 6px;
+          border-radius: 12px;
+          border: 1px solid rgba(232, 237, 233, 0.05);
+          width: fit-content;
+          backdrop-filter: blur(10px);
+        }
+
+        .team-tab-btn {
+          padding: 8px 18px;
+          font-size: 13.5px;
+          font-weight: 500;
+          color: var(--text-muted);
+          background: transparent;
+          border-radius: 8px;
+          text-transform: capitalize;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .team-tab-btn:hover {
+          color: #e8ede9;
+        }
+
+        .team-tab-btn.active {
+          color: #080d0b;
+          background: #ffffff;
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Team Showcase Grid */
         .team-showcase-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 40px;
           width: 100%;
           perspective: 1000px;
-          margin-top: 40px;
+          margin-bottom: 120px;
         }
 
         @media (max-width: 1024px) {
@@ -181,6 +353,10 @@ export default function TeamShowcase() {
           .team-showcase-grid {
             grid-template-columns: 1fr;
             gap: 24px;
+          }
+          .team-filter-tabs {
+            flex-wrap: wrap;
+            max-width: 90%;
           }
         }
 
@@ -208,7 +384,7 @@ export default function TeamShowcase() {
 
         .team-member-card:hover {
           border-color: rgba(29, 209, 161, 0.35);
-          box-shadow: 0 12px 40px rgba(29, 209, 161, 0.1);
+          box-shadow: 0 12px 40px rgba(29, 209, 161, 0.15);
         }
 
         .team-image-container {
@@ -240,6 +416,28 @@ export default function TeamShowcase() {
           filter: grayscale(0%) brightness(0.85) contrast(1.05);
           transform: scale(1.04);
         }
+
+        /* Domain Tag Badge */
+        .team-card-domain-badge {
+          position: absolute;
+          top: 12px;
+          left: 12px;
+          font-family: 'Inter', sans-serif;
+          font-size: 10px;
+          font-weight: 600;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          padding: 4px 10px;
+          border-radius: 20px;
+          z-index: 5;
+          backdrop-filter: blur(8px);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .badge-leadership { background: rgba(232, 237, 233, 0.12); color: #e8ede9; }
+        .badge-technical { background: rgba(0, 242, 254, 0.12); border-color: rgba(0, 242, 254, 0.2); color: #00f2fe; }
+        .badge-creatives { background: rgba(29, 209, 161, 0.12); border-color: rgba(29, 209, 161, 0.2); color: #1dd1a1; }
+        .badge-operations { background: rgba(234, 179, 8, 0.12); border-color: rgba(234, 179, 8, 0.2); color: #eab308; }
 
         .team-image-overlay {
           position: absolute;
@@ -295,7 +493,7 @@ export default function TeamShowcase() {
         .team-member-info h3 {
           font-family: 'Inter', sans-serif;
           font-weight: 500;
-          font-size: 1.15rem;
+          font-size: 1.2rem;
           color: var(--text-color);
           margin-bottom: 4px;
           letter-spacing: -0.01em;
@@ -303,11 +501,151 @@ export default function TeamShowcase() {
 
         .team-member-role {
           font-family: 'Inter', sans-serif;
-          font-weight: 400;
+          font-weight: 500;
           font-size: 0.85rem;
           color: #1dd1a1;
           text-transform: uppercase;
           letter-spacing: 0.05em;
+          margin-bottom: 12px;
+        }
+
+        .team-member-subdomains {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 6px;
+        }
+
+        .team-subdomain-pill {
+          font-family: 'Inter', sans-serif;
+          font-size: 10px;
+          color: var(--text-muted);
+          background: rgba(232, 237, 233, 0.03);
+          border: 1px solid rgba(232, 237, 233, 0.06);
+          padding: 2px 8px;
+          border-radius: 4px;
+          font-weight: 400;
+        }
+
+        /* Domains Operational visualizer grid */
+        .domains-visualizer-section {
+          width: 100%;
+          text-align: center;
+          margin-top: 20px;
+          border-top: 1px solid rgba(232, 237, 233, 0.06);
+          padding-top: 80px;
+        }
+
+        .domains-section-title {
+          font-family: 'Inter', sans-serif;
+          font-weight: 500;
+          font-size: clamp(1.8rem, 4vw, 2.5rem);
+          color: var(--text-color);
+          margin-bottom: 48px;
+          letter-spacing: -0.02em;
+        }
+
+        .domains-visualizer-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 30px;
+          width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+          .domains-visualizer-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+        }
+
+        .domain-visual-card {
+          position: relative;
+          background-image: 
+            url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.015'/%3E%3C/svg%3E"),
+            linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0) 100%);
+          background-color: var(--card-bg);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          border-radius: 20px;
+          padding: 32px;
+          text-align: left;
+          transition: border-color 0.4s ease, box-shadow 0.4s ease;
+          overflow: hidden;
+        }
+
+        .domain-visual-card:hover {
+          border-color: rgba(29, 209, 161, 0.25);
+          box-shadow: 0 12px 40px rgba(29, 209, 161, 0.05);
+        }
+
+        .domain-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+          margin-bottom: 12px;
+        }
+
+        .domain-badge-bullet {
+          width: 8px;
+          height: 8px;
+          border-radius: 50%;
+          display: block;
+        }
+
+        .bullet-technical { background: #00f2fe; box-shadow: 0 0 10px #00f2fe; }
+        .bullet-creatives { background: #1dd1a1; box-shadow: 0 0 10px #1dd1a1; }
+        .bullet-operations { background: #eab308; box-shadow: 0 0 10px #eab308; }
+
+        .domain-header h3 {
+          font-family: 'Inter', sans-serif;
+          font-weight: 600;
+          font-size: 1.35rem;
+          letter-spacing: 0.04em;
+          color: #e8ede9;
+        }
+
+        .domain-tagline {
+          font-size: 14px;
+          color: var(--text-muted);
+          line-height: 1.5;
+          margin-bottom: 28px;
+        }
+
+        .subdomains-list {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+        }
+
+        .subdomain-row-item {
+          display: flex;
+          align-items: flex-start;
+          gap: 12px;
+        }
+
+        .subdomain-bullet {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #1dd1a1;
+          margin-top: 3px;
+          flex-shrink: 0;
+        }
+
+        .subdomain-details h4 {
+          font-family: 'Inter', sans-serif;
+          font-weight: 500;
+          font-size: 13.5px;
+          color: #e8ede9;
+          margin-bottom: 2px;
+        }
+
+        .subdomain-details p {
+          font-size: 12px;
+          color: var(--text-muted);
+          line-height: 1.45;
+          margin: 0;
         }
       `}</style>
     </div>
