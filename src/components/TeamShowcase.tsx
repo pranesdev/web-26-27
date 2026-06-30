@@ -211,7 +211,7 @@ export default function TeamShowcase() {
               ref={(el) => { cardsRefs.current[idx] = el; }}
               className="team-card-wrapper"
             >
-              {/* Brighter dynamic domain glow spotlight behind card */}
+              {/* Dynamic domain glow spotlight behind card */}
               <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
 
               {/* Card Body */}
@@ -384,13 +384,13 @@ export default function TeamShowcase() {
           background: radial-gradient(circle, rgba(29, 209, 161, 0.4) 0%, rgba(29, 209, 161, 0) 70%);
         }
         .spotlight-technical {
-          background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0, 242, 254, 0) 70%);
+          background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(234, 179, 8, 0) 70%); /* Gold */
         }
         .spotlight-creatives {
           background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(168, 85, 247, 0) 70%);
         }
         .spotlight-operations {
-          background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(234, 179, 8, 0) 70%);
+          background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0, 242, 254, 0) 70%); /* Cyan */
         }
 
         /* The Member Card */
