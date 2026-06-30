@@ -80,13 +80,13 @@ export default function TeamShowcase() {
         const xc = rect.width / 2;
         const yc = rect.height / 2;
 
-        const tiltX = (yc - y) / 10;
-        const tiltY = (x - xc) / 10;
+        const tiltX = (yc - y) / 20; // Decreased sensitivity from 10 to 20 for subtler tilt
+        const tiltY = (x - xc) / 20;
 
         gsap.to(card, {
           rotateX: tiltX,
           rotateY: tiltY,
-          scale: 1.03,
+          scale: 1.025, // slightly reduced scale scaling
           duration: 0.35,
           ease: 'power2.out',
           overwrite: 'auto',
@@ -211,7 +211,7 @@ export default function TeamShowcase() {
               ref={(el) => { cardsRefs.current[idx] = el; }}
               className="team-card-wrapper"
             >
-              {/* Dynamic domain glow spotlight behind card */}
+              {/* Brighter dynamic domain glow spotlight behind card */}
               <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
 
               {/* Card Body */}
@@ -317,9 +317,9 @@ export default function TeamShowcase() {
 
         .president-card-wrapper {
           position: relative;
-          width: 32%;
-          min-width: 280px;
-          max-width: 360px;
+          width: 25%;
+          min-width: 230px;
+          max-width: 270px;
         }
 
         @media (max-width: 640px) {
@@ -328,26 +328,33 @@ export default function TeamShowcase() {
           }
         }
 
-        /* Team Showcase Grid */
+        /* Team Showcase Grid - 4 columns on large screens */
         .team-showcase-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 40px;
+          grid-template-columns: repeat(4, 1fr);
+          gap: 28px;
           width: 100%;
           perspective: 1000px;
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1200px) {
           .team-showcase-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
           }
         }
 
-        @media (max-width: 640px) {
+        @media (max-width: 900px) {
+          .team-showcase-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+          }
+        }
+
+        @media (max-width: 600px) {
           .team-showcase-grid {
             grid-template-columns: 1fr;
-            gap: 24px;
+            gap: 16px;
           }
           .team-filter-tabs {
             flex-wrap: wrap;
@@ -364,9 +371,9 @@ export default function TeamShowcase() {
         /* Dynamic Domain Glow Spotlights (Vibrant & highly visible) */
         .card-hover-glow-spotlight {
           position: absolute;
-          inset: -40px;
+          inset: -30px;
           opacity: 0;
-          filter: blur(45px);
+          filter: blur(40px);
           transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 1;
           pointer-events: none;
@@ -403,7 +410,7 @@ export default function TeamShowcase() {
           -webkit-backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 20px;
-          padding: 24px;
+          padding: 16px; /* Slightly tighter padding to look clean in smaller sizes */
           display: flex;
           flex-direction: column;
           align-items: stretch;
@@ -425,7 +432,7 @@ export default function TeamShowcase() {
           aspect-ratio: 1 / 1.15;
           border-radius: 12px;
           overflow: hidden;
-          margin-bottom: 20px;
+          margin-bottom: 16px;
           transform: translateZ(28px);
           transform-style: preserve-3d;
           background-color: #0b110f;
@@ -467,7 +474,7 @@ export default function TeamShowcase() {
           transform: translateX(-50%) translateY(12px) translateZ(18px);
           opacity: 0;
           display: flex;
-          gap: 12px;
+          gap: 10px;
           z-index: 12;
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
@@ -478,8 +485,8 @@ export default function TeamShowcase() {
         }
 
         .team-social-circle-btn {
-          width: 36px;
-          height: 36px;
+          width: 32px; /* slightly smaller social button to fit card size */
+          height: 32px;
           border-radius: 50%;
           background: rgba(17, 23, 20, 0.9);
           border: 1px solid rgba(255, 255, 255, 0.15);
@@ -507,7 +514,7 @@ export default function TeamShowcase() {
         .team-member-info h3 {
           font-family: 'Inter', sans-serif;
           font-weight: 500;
-          font-size: 1.2rem;
+          font-size: 1.1rem; /* slightly smaller header font */
           color: var(--text-color);
           margin-bottom: 4px;
           letter-spacing: -0.01em;
@@ -517,7 +524,7 @@ export default function TeamShowcase() {
         .team-member-role {
           font-family: 'Inter', sans-serif;
           font-weight: 500;
-          font-size: 0.85rem;
+          font-size: 0.8rem; /* slightly smaller role font */
           color: #1dd1a1; /* Neon mint-green */
           text-transform: uppercase;
           letter-spacing: 0.05em;
