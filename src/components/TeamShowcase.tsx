@@ -3,7 +3,7 @@ import { gsap } from 'gsap';
 
 interface Member {
   name: string;
-  role: string; // This role string will be displayed in green below the name
+  role: string;
   domain: 'presidency' | 'technical' | 'creatives' | 'operations';
   image: string;
   github: string;
@@ -80,13 +80,13 @@ export default function TeamShowcase() {
         const xc = rect.width / 2;
         const yc = rect.height / 2;
 
-        const tiltX = (yc - y) / 14;
-        const tiltY = (x - xc) / 14;
+        const tiltX = (yc - y) / 10; // slightly increased tilt intensity
+        const tiltY = (x - xc) / 10;
 
         gsap.to(card, {
           rotateX: tiltX,
           rotateY: tiltY,
-          scale: 1.02,
+          scale: 1.03,
           duration: 0.35,
           ease: 'power2.out',
           overwrite: 'auto',
@@ -115,7 +115,7 @@ export default function TeamShowcase() {
   }, [activeTab]);
 
   useEffect(() => {
-    // Fade elements in on tab filter switch
+    // Staggered 3D reveal entrance animation when tab changes
     if (containerRef.current) {
       const targets = [
         ...(containerRef.current.querySelectorAll('.team-card-wrapper') as any)
@@ -125,8 +125,8 @@ export default function TeamShowcase() {
       }
       gsap.fromTo(
         targets,
-        { opacity: 0, y: 16 },
-        { opacity: 1, y: 0, duration: 0.4, stagger: 0.05, ease: 'power2.out' }
+        { opacity: 0, y: 40, rotateX: -20, scale: 0.95 },
+        { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 0.65, stagger: 0.07, ease: 'power2.out' }
       );
     }
   }, [activeTab]);
@@ -143,6 +143,17 @@ export default function TeamShowcase() {
 
   return (
     <div className="team-component-wrapper">
+      {/* Shared Gradient Definitions for SVG Border Trace */}
+      <svg style={{ position: 'absolute', width: 0, height: 0 }}>
+        <defs>
+          <linearGradient id="cardGlowGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#1dd1a1" />
+            <stop offset="50%" stopColor="#00f2fe" />
+            <stop offset="100%" stopColor="#c084fc" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       {/* Category Navigation Tabs */}
       <div className="team-filter-tabs">
         {(['all', 'technical', 'creatives', 'operations'] as const).map(tab => (
@@ -164,7 +175,18 @@ export default function TeamShowcase() {
               ref={presidentCardRef}
               className="team-card-wrapper president-card-wrapper"
             >
+              {/* Dynamic domain glow spotlight behind card */}
+              <div className="card-hover-glow-spotlight spotlight-presidency" />
+              
               <div className="team-member-card president-member-card">
+                {/* SVG border drawing path */}
+                <svg className="card-border-svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
+                  <rect x="0" y="0" width="100" height="100" rx="6" ry="6" stroke="url(#cardGlowGradient)" strokeWidth="1.5" />
+                </svg>
+
+                {/* Cyber-pulsing indicator node in the top right */}
+                <div className="card-pulse-dot" />
+
                 <div className="team-image-container">
                   <img src={president.image} alt={president.name} className="team-member-image" />
                   <div className="team-image-overlay" />
@@ -208,8 +230,19 @@ export default function TeamShowcase() {
               ref={(el) => { cardsRefs.current[idx] = el; }}
               className="team-card-wrapper"
             >
+              {/* Dynamic domain glow spotlight behind card */}
+              <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
+
               {/* Card Body */}
               <div className="team-member-card">
+                {/* SVG border drawing path */}
+                <svg className="card-border-svg" width="100%" height="100%" viewBox="0 0 100 100" preserveAspectRatio="none" fill="none">
+                  <rect x="0" y="0" width="100" height="100" rx="6" ry="6" stroke="url(#cardGlowGradient)" strokeWidth="1.5" />
+                </svg>
+
+                {/* Cyber-pulsing indicator node in the top right */}
+                <div className="card-pulse-dot" />
+
                 {/* Image Container */}
                 <div className="team-image-container">
                   <img src={m.image} alt={m.name} className="team-member-image" />
@@ -269,6 +302,7 @@ export default function TeamShowcase() {
           border: 1px solid rgba(232, 237, 233, 0.05);
           width: fit-content;
           backdrop-filter: blur(10px);
+          z-index: 20;
         }
 
         .team-tab-btn {
@@ -309,6 +343,7 @@ export default function TeamShowcase() {
         }
 
         .president-card-wrapper {
+          position: relative;
           width: 32%;
           min-width: 280px;
           max-width: 360px;
@@ -348,10 +383,45 @@ export default function TeamShowcase() {
         }
 
         .team-card-wrapper {
+          position: relative;
           transform-style: preserve-3d;
           perspective: 1000px;
         }
 
+        /* Dynamic Domain Glow Spotlights */
+        .card-hover-glow-spotlight {
+          position: absolute;
+          inset: -30px;
+          background: radial-gradient(circle, rgba(29, 209, 161, 0.22) 0%, rgba(29, 209, 161, 0) 70%);
+          opacity: 0;
+          filter: blur(35px);
+          transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1), transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 1;
+          pointer-events: none;
+          border-radius: 40px;
+          transform: scale(0.8);
+        }
+
+        .team-card-wrapper:hover .card-hover-glow-spotlight,
+        .president-card-wrapper:hover .card-hover-glow-spotlight {
+          opacity: 1;
+          transform: scale(1.1) translateZ(-10px);
+        }
+
+        .spotlight-presidency {
+          background: radial-gradient(circle, rgba(29, 209, 161, 0.25) 0%, rgba(29, 209, 161, 0) 70%);
+        }
+        .spotlight-technical {
+          background: radial-gradient(circle, rgba(0, 242, 254, 0.25) 0%, rgba(0, 242, 254, 0) 70%);
+        }
+        .spotlight-creatives {
+          background: radial-gradient(circle, rgba(168, 85, 247, 0.25) 0%, rgba(168, 85, 247, 0) 70%);
+        }
+        .spotlight-operations {
+          background: radial-gradient(circle, rgba(234, 179, 8, 0.25) 0%, rgba(234, 179, 8, 0) 70%);
+        }
+
+        /* The Member Card */
         .team-member-card {
           background-image: 
             url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E"),
@@ -367,13 +437,62 @@ export default function TeamShowcase() {
           align-items: stretch;
           transition: border-color 0.4s ease, box-shadow 0.4s ease;
           transform-style: preserve-3d;
+          position: relative;
+          z-index: 2;
         }
 
         .team-member-card:hover {
-          border-color: rgba(29, 209, 161, 0.35);
-          box-shadow: 0 12px 40px rgba(29, 209, 161, 0.15);
+          border-color: rgba(255, 255, 255, 0.15);
+          box-shadow: 0 20px 45px rgba(0, 0, 0, 0.3);
         }
 
+        /* Border Trace SVG */
+        .card-border-svg {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          pointer-events: none;
+          z-index: 10;
+          overflow: visible;
+        }
+
+        .card-border-svg rect {
+          stroke-dasharray: 400;
+          stroke-dashoffset: 400;
+          transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .team-member-card:hover .card-border-svg rect {
+          stroke-dashoffset: 0;
+        }
+
+        /* Pulsing Cyber Indicator Dot */
+        .card-pulse-dot {
+          position: absolute;
+          top: 12px;
+          right: 12px;
+          width: 6px;
+          height: 6px;
+          background: #1dd1a1;
+          border-radius: 50%;
+          opacity: 0;
+          transition: opacity 0.3s ease;
+          box-shadow: 0 0 8px #1dd1a1;
+          z-index: 11;
+        }
+
+        .team-member-card:hover .card-pulse-dot {
+          opacity: 1;
+          animation: pulseTerminalDot 1s infinite alternate;
+        }
+
+        @keyframes pulseTerminalDot {
+          0% { transform: scale(1); box-shadow: 0 0 4px #1dd1a1; }
+          100% { transform: scale(1.4); box-shadow: 0 0 12px #1dd1a1, 0 0 18px #00f2fe; }
+        }
+
+        /* 3D Parallax layers */
         .team-image-container {
           position: relative;
           width: 100%;
@@ -381,7 +500,8 @@ export default function TeamShowcase() {
           border-radius: 12px;
           overflow: hidden;
           margin-bottom: 20px;
-          transform: translateZ(20px);
+          transform: translateZ(28px);
+          transform-style: preserve-3d;
           background-color: #0b110f;
           border: 1px solid rgba(255, 255, 255, 0.04);
         }
@@ -393,6 +513,7 @@ export default function TeamShowcase() {
           filter: grayscale(100%) brightness(0.7) contrast(1.15);
           transition: filter 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
           transform-origin: center center;
+          transform: translateZ(5px);
           
           /* Soft gradient mask for cutout look */
           mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 12%);
@@ -401,7 +522,7 @@ export default function TeamShowcase() {
 
         .team-member-card:hover .team-member-image {
           filter: grayscale(0%) brightness(0.85) contrast(1.05);
-          transform: scale(1.04);
+          transform: scale(1.04) translateZ(10px);
         }
 
         .team-image-overlay {
@@ -410,30 +531,31 @@ export default function TeamShowcase() {
           background: linear-gradient(to top, rgba(8, 13, 11, 0.8) 0%, rgba(8, 13, 11, 0) 40%);
           pointer-events: none;
           z-index: 1;
+          transform: translateZ(1px);
         }
 
         .team-social-overlay-row {
           position: absolute;
           bottom: 16px;
           left: 50%;
-          transform: translateX(-50%) translateY(12px);
+          transform: translateX(-50%) translateY(12px) translateZ(18px);
           opacity: 0;
           display: flex;
           gap: 12px;
-          z-index: 10;
+          z-index: 12;
           transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
         .team-member-card:hover .team-social-overlay-row {
           opacity: 1;
-          transform: translateX(-50%) translateY(0);
+          transform: translateX(-50%) translateY(0) translateZ(35px);
         }
 
         .team-social-circle-btn {
           width: 36px;
           height: 36px;
           border-radius: 50%;
-          background: rgba(17, 23, 20, 0.85);
+          background: rgba(17, 23, 20, 0.9);
           border: 1px solid rgba(255, 255, 255, 0.15);
           display: flex;
           align-items: center;
@@ -450,7 +572,8 @@ export default function TeamShowcase() {
         }
 
         .team-member-info {
-          transform: translateZ(10px);
+          transform: translateZ(36px);
+          transform-style: preserve-3d;
           text-align: left;
           padding: 0 4px;
         }
@@ -462,6 +585,7 @@ export default function TeamShowcase() {
           color: var(--text-color);
           margin-bottom: 4px;
           letter-spacing: -0.01em;
+          transform: translateZ(8px);
         }
 
         .team-member-role {
@@ -472,6 +596,7 @@ export default function TeamShowcase() {
           text-transform: uppercase;
           letter-spacing: 0.05em;
           margin-bottom: 4px;
+          transform: translateZ(14px);
         }
       `}</style>
     </div>

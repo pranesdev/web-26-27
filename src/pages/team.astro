@@ -6,6 +6,7 @@ import SideRays from '../components/SideRays.tsx';
 import Watermark from '../components/Watermark.tsx';
 import TeamArtCutouts from '../components/TeamArtCutouts.tsx';
 import TeamShowcase from '../components/TeamShowcase.tsx';
+import TechParticles from '../components/TechParticles.tsx';
 import '../styles/contact.css';
 ---
 
@@ -28,6 +29,9 @@ import '../styles/contact.css';
       opacity={0.65}
     />
   </div>
+
+  <!-- Interactive Background Canvas Particles (React Island) -->
+  <TechParticles client:load />
 
   <!-- Decorative Corner Circuit Board Graphics -->
   <svg class="corner-graphic corner-top-left" width="250" height="250" viewBox="0 0 250 250" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -73,8 +77,12 @@ import '../styles/contact.css';
 
       <!-- Title / Intro Header -->
       <section class="team-header-intro">
-        <h1 class="left-title text-center" style="font-size: clamp(2.2rem, 5vw, 3.2rem); margin-bottom: 16px;">The Minds Behind DSC</h1>
-        <p class="left-subtext text-center" style="max-width: 600px; margin: 0 auto 48px; font-size: 16px;">
+        <h1 class="left-title text-center" style="font-size: clamp(2.2rem, 5vw, 3.2rem); margin-bottom: 16px; overflow: hidden;">
+          {Array.from("The Minds Behind DSC").map((char) => (
+            <span class="reveal-char" style="display: inline-block; white-space: pre;">{char}</span>
+          ))}
+        </h1>
+        <p class="left-subtext text-center intro-subtext" style="max-width: 600px; margin: 0 auto 48px; font-size: 16px; opacity: 0; filter: blur(4px);">
           Developer Students Club is built by a team of passionate developers, designers, and innovators who believe in the power of community-driven learning.
         </p>
       </section>
@@ -210,3 +218,20 @@ import '../styles/contact.css';
     }
   }
 </style>
+
+<script>
+  import { gsap } from 'gsap';
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const timeline = gsap.timeline();
+    timeline.fromTo(".reveal-char",
+      { opacity: 0, y: 35, filter: 'blur(8px)' },
+      { opacity: 1, y: 0, filter: 'blur(0px)', duration: 0.8, stagger: 0.03, ease: 'power4.out' }
+    );
+    timeline.fromTo(".intro-subtext",
+      { opacity: 0, y: 15, filter: 'blur(4px)' },
+      { opacity: 0.6, y: 0, filter: 'blur(0px)', duration: 0.8, ease: 'power2.out' },
+      "-=0.45"
+    );
+  });
+</script>
