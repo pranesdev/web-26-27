@@ -8,6 +8,7 @@ interface Member {
   github: string;
   linkedin: string;
   email: string;
+  skills?: string[];
 }
 
 interface Node {
@@ -15,8 +16,8 @@ interface Node {
   label: string;
   role: string;
   domain: 'presidency' | 'technical' | 'creatives' | 'operations';
-  type: 'president' | 'hub' | 'member';
-  image?: string;
+  type: 'president' | 'lead' | 'subdomain' | 'member';
+  parentId?: string;
   visible: boolean;
   expanded?: boolean;
   
@@ -28,7 +29,7 @@ interface Node {
   radius: number;
   color: string;
   
-  // Member reference
+  // Member reference (only for president, leads, and members)
   memberRef?: Member;
 }
 
@@ -99,7 +100,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
   const imagesCache = useRef<Record<string, HTMLImageElement>>({});
 
   useEffect(() => {
-    // Pre-cache member profile images
     MEMBERS_DATA.forEach(m => {
       if (m.image) {
         const img = new Image();
@@ -121,7 +121,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
     let width = (canvas.width = containerRef.current?.clientWidth || 800);
     let height = (canvas.height = 550);
 
-    // Initial domain colors
     const colors = {
       presidency: '#1dd1a1', // Mint Green
       technical: '#eab308',   // Gold
@@ -129,9 +128,9 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
       creatives: '#c084fc',   // Purple
     };
 
-    // Construct the nodes list
+    // Construct the nodes list matching requested tree hierarchy
     let nodes: Node[] = [
-      // President
+      // Root: President
       {
         id: 'president',
         label: 'Karthik Rajan',
@@ -147,65 +146,21 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         color: colors.presidency,
         memberRef: MEMBERS_DATA[0],
       },
-      // Domain Hubs
+      // Leads (Connected directly to president)
       {
-        id: 'technical_hub',
-        label: 'Technical',
-        role: 'Domain Hub',
+        id: 'aditya',
+        label: 'Aditya Kumar',
+        role: 'Technical Lead',
         domain: 'technical',
-        type: 'hub',
+        type: 'lead',
+        parentId: 'president',
         visible: true,
         expanded: false,
         x: width / 2 - 180,
         y: height / 2 + 80,
         vx: 0,
         vy: 0,
-        radius: 36,
-        color: colors.technical,
-      },
-      {
-        id: 'operations_hub',
-        label: 'Operations',
-        role: 'Domain Hub',
-        domain: 'operations',
-        type: 'hub',
-        visible: true,
-        expanded: false,
-        x: width / 2 + 180,
-        y: height / 2 + 80,
-        vx: 0,
-        vy: 0,
-        radius: 36,
-        color: colors.operations,
-      },
-      {
-        id: 'creatives_hub',
-        label: 'Creatives',
-        role: 'Domain Hub',
-        domain: 'creatives',
-        type: 'hub',
-        visible: true,
-        expanded: false,
-        x: width / 2,
-        y: height / 2 - 190,
-        vx: 0,
-        vy: 0,
-        radius: 36,
-        color: colors.creatives,
-      },
-      // Members (Visible only when respective Hub is expanded)
-      {
-        id: 'aditya',
-        label: 'Aditya Kumar',
-        role: 'Technical Lead',
-        domain: 'technical',
-        type: 'member',
-        visible: false,
-        x: width / 2 - 250,
-        y: height / 2 + 120,
-        vx: 0,
-        vy: 0,
-        radius: 28,
+        radius: 34,
         color: colors.technical,
         memberRef: MEMBERS_DATA[1],
       },
@@ -214,13 +169,15 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         label: 'Deepika Menon',
         role: 'Creatives Lead',
         domain: 'creatives',
-        type: 'member',
-        visible: false,
-        x: width / 2 + 80,
-        y: height / 2 - 240,
+        type: 'lead',
+        parentId: 'president',
+        visible: true,
+        expanded: false,
+        x: width / 2,
+        y: height / 2 - 170,
         vx: 0,
         vy: 0,
-        radius: 28,
+        radius: 34,
         color: colors.creatives,
         memberRef: MEMBERS_DATA[2],
       },
@@ -229,25 +186,144 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         label: 'Sneha Patel',
         role: 'Operations Lead',
         domain: 'operations',
-        type: 'member',
-        visible: false,
-        x: width / 2 + 250,
-        y: height / 2 + 120,
+        type: 'lead',
+        parentId: 'president',
+        visible: true,
+        expanded: false,
+        x: width / 2 + 180,
+        y: height / 2 + 80,
         vx: 0,
         vy: 0,
-        radius: 28,
+        radius: 34,
         color: colors.operations,
         memberRef: MEMBERS_DATA[3],
       },
+      // Technical Subdomains (connect to aditya)
+      {
+        id: 'sub_ml',
+        label: 'Machine Learning',
+        role: 'Subdomain Hub',
+        domain: 'technical',
+        type: 'subdomain',
+        parentId: 'aditya',
+        visible: false,
+        expanded: false,
+        x: width / 2 - 250,
+        y: height / 2 + 150,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.technical,
+      },
+      {
+        id: 'sub_web',
+        label: 'Web Dev',
+        role: 'Subdomain Hub',
+        domain: 'technical',
+        type: 'subdomain',
+        parentId: 'aditya',
+        visible: false,
+        expanded: false,
+        x: width / 2 - 120,
+        y: height / 2 + 150,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.technical,
+      },
+      {
+        id: 'sub_app',
+        label: 'App Dev',
+        role: 'Subdomain Hub',
+        domain: 'technical',
+        type: 'subdomain',
+        parentId: 'aditya',
+        visible: false,
+        expanded: false,
+        x: width / 2 - 180,
+        y: height / 2 + 200,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.technical,
+      },
+      // Creatives Subdomains (connect to deepika)
+      {
+        id: 'sub_design',
+        label: 'Design',
+        role: 'Subdomain Hub',
+        domain: 'creatives',
+        type: 'subdomain',
+        parentId: 'deepika',
+        visible: false,
+        expanded: false,
+        x: width / 2 - 80,
+        y: height / 2 - 230,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.creatives,
+      },
+      {
+        id: 'sub_content',
+        label: 'Content',
+        role: 'Subdomain Hub',
+        domain: 'creatives',
+        type: 'subdomain',
+        parentId: 'deepika',
+        visible: false,
+        expanded: false,
+        x: width / 2 + 80,
+        y: height / 2 - 230,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.creatives,
+      },
+      // Operations Subdomains (connect to sneha)
+      {
+        id: 'sub_mgmt',
+        label: 'Management',
+        role: 'Subdomain Hub',
+        domain: 'operations',
+        type: 'subdomain',
+        parentId: 'sneha',
+        visible: false,
+        expanded: false,
+        x: width / 2 + 120,
+        y: height / 2 + 150,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.operations,
+      },
+      {
+        id: 'sub_mktg',
+        label: 'Marketing',
+        role: 'Subdomain Hub',
+        domain: 'operations',
+        type: 'subdomain',
+        parentId: 'sneha',
+        visible: false,
+        expanded: false,
+        x: width / 2 + 250,
+        y: height / 2 + 150,
+        vx: 0,
+        vy: 0,
+        radius: 20,
+        color: colors.operations,
+      },
+      // Members (Visible only when respective Subdomain is expanded)
       {
         id: 'rahul',
         label: 'Rahul Anand',
         role: 'Machine Learning',
         domain: 'technical',
         type: 'member',
+        parentId: 'sub_ml',
         visible: false,
-        x: width / 2 - 180,
-        y: height / 2 + 190,
+        x: width / 2 - 320,
+        y: height / 2 + 220,
         vx: 0,
         vy: 0,
         radius: 28,
@@ -256,23 +332,29 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
       },
     ];
 
-    // Connective Links list
+    // Links mappings
     let links: Link[] = [
-      { source: 'president', target: 'technical_hub', visible: true },
-      { source: 'president', target: 'operations_hub', visible: true },
-      { source: 'president', target: 'creatives_hub', visible: true },
-      { source: 'technical_hub', target: 'aditya', visible: false },
-      { source: 'technical_hub', target: 'rahul', visible: false },
-      { source: 'creatives_hub', target: 'deepika', visible: false },
-      { source: 'operations_hub', target: 'sneha', visible: false },
+      // President to leads
+      { source: 'president', target: 'aditya', visible: true },
+      { source: 'president', target: 'deepika', visible: true },
+      { source: 'president', target: 'sneha', visible: true },
+      // Technical Lead to its subdomains
+      { source: 'aditya', target: 'sub_ml', visible: false },
+      { source: 'aditya', target: 'sub_web', visible: false },
+      { source: 'aditya', target: 'sub_app', visible: false },
+      // Creatives Lead to its subdomains
+      { source: 'deepika', target: 'sub_design', visible: false },
+      { source: 'deepika', target: 'sub_content', visible: false },
+      // Operations Lead to its subdomains
+      { source: 'sneha', target: 'sub_mgmt', visible: false },
+      { source: 'sneha', target: 'sub_mktg', visible: false },
+      // Subdomains to members
+      { source: 'sub_ml', target: 'rahul', visible: false },
     ];
 
-    // Interaction variables
     let draggedNode: Node | null = null;
     let mouseOffset = { x: 0, y: 0 };
     let hoverNode: Node | null = null;
-
-    // Track frame ticks to animate connecting laser data pulses
     let pulseProgress = 0;
 
     const resizeCanvas = () => {
@@ -283,25 +365,50 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
 
     window.addEventListener('resize', resizeCanvas);
 
-    // Toggle branches on hub clicks
-    const toggleHubBranch = (hubNode: Node) => {
-      const isExpanding = !hubNode.expanded;
-      hubNode.expanded = isExpanding;
+    // Expand/Collapse recursive hierarchy
+    const toggleNode = (node: Node) => {
+      if (node.type === 'lead') {
+        const isExpanding = !node.expanded;
+        node.expanded = isExpanding;
 
-      // Toggle linked members visibility
-      nodes.forEach(n => {
-        if (n.type === 'member' && n.domain === hubNode.domain) {
-          n.visible = isExpanding;
-          if (isExpanding) {
-            // Explode particles outwards from hub coordinate location
-            n.x = hubNode.x + (Math.random() - 0.5) * 20;
-            n.y = hubNode.y + (Math.random() - 0.5) * 20;
-            n.vx = (Math.random() - 0.5) * 8;
-            n.vy = (Math.random() - 0.5) * 8;
+        nodes.forEach(n => {
+          if (n.type === 'subdomain' && n.parentId === node.id) {
+            n.visible = isExpanding;
+            if (!isExpanding) {
+              // Hide everything recursively
+              n.expanded = false;
+              nodes.forEach(m => {
+                if (m.parentId === n.id) {
+                  m.visible = false;
+                }
+              });
+            } else {
+              // Burst outward
+              n.x = node.x + (Math.random() - 0.5) * 30;
+              n.y = node.y + (Math.random() - 0.5) * 30;
+              n.vx = (Math.random() - 0.5) * 6;
+              n.vy = (Math.random() - 0.5) * 6;
+            }
           }
-        }
-      });
+        });
+      } else if (node.type === 'subdomain') {
+        const isExpanding = !node.expanded;
+        node.expanded = isExpanding;
 
+        nodes.forEach(n => {
+          if (n.parentId === node.id) {
+            n.visible = isExpanding;
+            if (isExpanding) {
+              n.x = node.x + (Math.random() - 0.5) * 30;
+              n.y = node.y + (Math.random() - 0.5) * 30;
+              n.vx = (Math.random() - 0.5) * 6;
+              n.vy = (Math.random() - 0.5) * 6;
+            }
+          }
+        });
+      }
+
+      // Sync links visibility
       links.forEach(l => {
         const srcNode = nodes.find(n => n.id === l.source);
         const tgtNode = nodes.find(n => n.id === l.target);
@@ -311,7 +418,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
       });
     };
 
-    // Handle mouse drag / click triggers
     const handleMouseDown = (e: MouseEvent) => {
       const rect = canvas.getBoundingClientRect();
       const mx = e.clientX - rect.left;
@@ -341,7 +447,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         draggedNode.vx = 0;
         draggedNode.vy = 0;
       } else {
-        // Find hover node
         const match = nodes.find(n => {
           if (!n.visible) return false;
           const dx = mx - n.x;
@@ -359,7 +464,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
 
     const handleMouseUp = (e: MouseEvent) => {
       if (draggedNode) {
-        // Click action (if not dragged far)
         const rect = canvas.getBoundingClientRect();
         const mx = e.clientX - rect.left;
         const my = e.clientY - rect.top;
@@ -368,11 +472,13 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         const dragDist = Math.sqrt(dx * dx + dy * dy);
 
         if (dragDist < 5) {
-          if (draggedNode.type === 'hub') {
-            toggleHubBranch(draggedNode);
-            onSelectMember(null);
-          } else if (draggedNode.memberRef) {
+          if (draggedNode.type === 'lead' || draggedNode.type === 'subdomain') {
+            toggleNode(draggedNode);
+          }
+          if (draggedNode.memberRef) {
             onSelectMember(draggedNode.memberRef);
+          } else {
+            onSelectMember(null);
           }
         }
         draggedNode = null;
@@ -383,16 +489,20 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
     canvas.addEventListener('mousemove', handleMouseMove);
     window.addEventListener('mouseup', handleMouseUp);
 
-    // Physics parameters
-    const stiffness = 0.015; // spring strength
-    const restLength = 110;  // ideal link length
-    const repulsionStrength = 2200; // coulomb repulsion
-    const damping = 0.88; // friction / deceleration damping
+    // Spring constants (Adjusted for multi-level spacing layout)
+    const restLengthMap: Record<string, number> = {
+      president_lead: 120,
+      lead_subdomain: 85,
+      subdomain_member: 70,
+    };
+    const stiffness = 0.018;
+    const repulsionStrength = 2200;
+    const damping = 0.88;
 
     const updatePhysics = () => {
       const activeNodes = nodes.filter(n => n.visible);
 
-      // 1. Repulsion between all nodes
+      // Repulsion force
       for (let i = 0; i < activeNodes.length; i++) {
         const n1 = activeNodes[i];
         for (let j = i + 1; j < activeNodes.length; j++) {
@@ -401,48 +511,43 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
           const dy = n1.y - n2.y;
           const dist = Math.sqrt(dx * dx + dy * dy) || 1;
 
-          // Increase repulsion if they are too close to prevent overlap
           const force = repulsionStrength / (dist * dist);
           const fx = (dx / dist) * force;
           const fy = (dy / dist) * force;
 
-          if (n1 !== draggedNode) {
-            n1.vx += fx;
-            n1.vy += fy;
-          }
-          if (n2 !== draggedNode) {
-            n2.vx -= fx;
-            n2.vy -= fy;
-          }
+          if (n1 !== draggedNode) { n1.vx += fx; n1.vy += fy; }
+          if (n2 !== draggedNode) { n2.vx -= fx; n2.vy -= fy; }
         }
       }
 
-      // 2. Attraction along connected link lines (Hooke's Law)
+      // Spring attraction force along visible links
       links.forEach(link => {
         if (!link.visible) return;
         const n1 = nodes.find(n => n.id === link.source)!;
         const n2 = nodes.find(n => n.id === link.target)!;
 
+        // Custom resting spring length based on connection type
+        let restLen = restLengthMap.lead_subdomain;
+        if (n1.type === 'president' || n2.type === 'president') {
+          restLen = restLengthMap.president_lead;
+        } else if (n1.type === 'member' || n2.type === 'member') {
+          restLen = restLengthMap.subdomain_member;
+        }
+
         const dx = n1.x - n2.x;
         const dy = n1.y - n2.y;
         const dist = Math.sqrt(dx * dx + dy * dy) || 1;
-        const extension = dist - restLength;
+        const extension = dist - restLen;
         const force = extension * stiffness;
 
         const fx = (dx / dist) * force;
         const fy = (dy / dist) * force;
 
-        if (n1 !== draggedNode) {
-          n1.vx -= fx;
-          n1.vy -= fy;
-        }
-        if (n2 !== draggedNode) {
-          n2.vx += fx;
-          n2.vy += fy;
-        }
+        if (n1 !== draggedNode) { n1.vx -= fx; n1.vy -= fy; }
+        if (n2 !== draggedNode) { n2.vx += fx; n2.vy += fy; }
       });
 
-      // 3. Central gravity constraint (prevents drifting off screen)
+      // Gravity and bounds limits
       activeNodes.forEach(n => {
         if (n === draggedNode) return;
 
@@ -451,16 +556,14 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
         const dx = cx - n.x;
         const dy = cy - n.y;
         
-        n.vx += dx * 0.0006;
-        n.vy += dy * 0.0006;
+        n.vx += dx * 0.0007;
+        n.vy += dy * 0.0007;
 
-        // Apply friction and move
         n.vx *= damping;
         n.vy *= damping;
         n.x += n.vx;
         n.y += n.vy;
 
-        // Bounding box screen limits
         const margin = n.radius + 15;
         if (n.x < margin) { n.x = margin; n.vx *= -0.2; }
         if (n.x > width - margin) { n.x = width - margin; n.vx *= -0.2; }
@@ -469,39 +572,45 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
       });
     };
 
-    // Render loop
     const render = () => {
       updatePhysics();
       ctx.clearRect(0, 0, width, height);
 
-      // Increment signal pulse progress animation
       pulseProgress = (pulseProgress + 0.008) % 1;
 
-      // 1. Draw Connective Link Lines
+      // 1. Draw Links
       links.forEach(l => {
         if (!l.visible) return;
         const n1 = nodes.find(n => n.id === l.source)!;
         const n2 = nodes.find(n => n.id === l.target)!;
 
-        // Base links line
+        // Draw dotted lines for subdomain connection nodes
         ctx.beginPath();
         ctx.moveTo(n1.x, n1.y);
         ctx.lineTo(n2.x, n2.y);
-        ctx.strokeStyle = 'rgba(232, 237, 233, 0.06)';
-        ctx.lineWidth = 2.5;
+        
+        if (n2.type === 'subdomain') {
+          ctx.strokeStyle = 'rgba(232, 237, 233, 0.04)';
+          ctx.setLineDash([4, 4]);
+        } else {
+          ctx.strokeStyle = 'rgba(232, 237, 233, 0.06)';
+          ctx.setLineDash([]);
+        }
+        ctx.lineWidth = n2.type === 'member' ? 1.5 : 2.5;
         ctx.stroke();
+        ctx.setLineDash([]); // reset
 
-        // Glowing animated pulse dot along link
+        // Draw pulse signals along links
         const px = n1.x + (n2.x - n1.x) * pulseProgress;
         const py = n1.y + (n2.y - n1.y) * pulseProgress;
 
         ctx.beginPath();
-        ctx.arc(px, py, 4, 0, Math.PI * 2);
+        ctx.arc(px, py, n2.type === 'member' ? 3 : 4, 0, Math.PI * 2);
         ctx.fillStyle = n2.color;
         ctx.shadowColor = n2.color;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 8;
         ctx.fill();
-        ctx.shadowBlur = 0; // reset shadow
+        ctx.shadowBlur = 0;
       });
 
       // 2. Draw Nodes
@@ -510,47 +619,45 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
 
         ctx.save();
 
-        // Hover enlarges card visually
-        const scale = hoverNode?.id === n.id ? 1.08 : 1.0;
+        const isHovered = hoverNode?.id === n.id;
+        const scale = isHovered ? 1.08 : 1.0;
         const r = n.radius * scale;
 
-        // Draw shadow glow circle behind the node
+        // Shadow circle glow
         ctx.beginPath();
-        ctx.arc(n.x, n.y, r + 4, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(8, 13, 11, 0.9)';
+        ctx.arc(n.x, n.y, r + (n.type === 'subdomain' ? 2 : 4), 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(8, 13, 11, 0.95)';
         ctx.shadowColor = n.color;
-        ctx.shadowBlur = hoverNode?.id === n.id ? 15 : 6;
+        ctx.shadowBlur = isHovered ? 15 : 6;
         ctx.fill();
-        ctx.shadowBlur = 0; // reset
+        ctx.shadowBlur = 0;
 
-        // Draw border ring
+        // Outer ring border outline
         ctx.beginPath();
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
         ctx.strokeStyle = n.color;
-        ctx.lineWidth = n.type === 'hub' ? 3 : 2;
+        ctx.lineWidth = n.type === 'subdomain' ? 1.5 : 3;
         ctx.stroke();
 
-        // Draw node content
-        if (n.type === 'hub') {
-          // Draw Domain Hub node
+        if (n.type === 'subdomain') {
+          // Draw Subdomain Hub
           ctx.beginPath();
-          ctx.arc(n.x, n.y, r - 2, 0, Math.PI * 2);
-          ctx.fillStyle = 'rgba(17, 23, 20, 0.85)';
+          ctx.arc(n.x, n.y, r - 1, 0, Math.PI * 2);
+          ctx.fillStyle = 'rgba(17, 23, 20, 0.9)';
           ctx.fill();
 
-          // Hub Label text
+          // Subdomain abbreviation letters
           ctx.fillStyle = '#ffffff';
-          ctx.font = '600 11.5px Inter';
+          ctx.font = '600 9px Inter';
           ctx.textAlign = 'center';
           ctx.textBaseline = 'middle';
-          ctx.fillText(n.label.toUpperCase(), n.x, n.y - 2);
-
-          // Subtitle (Click to expand/collapse indicator)
-          ctx.fillStyle = n.color;
-          ctx.font = '500 8.5px Inter';
-          ctx.fillText(n.expanded ? 'COLLAPSE' : 'EXPAND', n.x, n.y + 11);
+          
+          // Get abbreviation e.g. "Machine Learning" -> "ML", "Web Dev" -> "WEB"
+          const words = n.label.split(' ');
+          const abbr = words.length > 1 ? words.map(w => w[0]).join('') : words[0].substring(0, 3).toUpperCase();
+          ctx.fillText(abbr, n.x, n.y);
         } else {
-          // Draw Profile Circle Image
+          // Clipped profile photo nodes
           const img = imagesCache.current[n.label];
           if (img) {
             ctx.beginPath();
@@ -558,7 +665,6 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
             ctx.clip();
             ctx.drawImage(img, n.x - r, n.y - r, r * 2, r * 2);
           } else {
-            // Fallback flat color placeholder
             ctx.beginPath();
             ctx.arc(n.x, n.y, r - 2, 0, Math.PI * 2);
             ctx.fillStyle = 'rgba(232, 237, 233, 0.1)';
@@ -585,7 +691,7 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
 
   return (
     <div ref={containerRef} className="network-graph-container">
-      {/* Node Hover HTML Tooltip */}
+      {/* Tooltip detail element */}
       {hoveredNode && (
         <div
           className="graph-node-tooltip"
@@ -601,6 +707,8 @@ export default function TeamNetworkGraph({ onSelectMember }: GraphProps) {
             <div className="tooltip-name">{hoveredNode.label}</div>
             <div className="tooltip-role" style={{ color: hoveredNode.color }}>
               {hoveredNode.role}
+              {hoveredNode.type === 'lead' && (hoveredNode.expanded ? ' (Click to Close)' : ' (Click to Open Subdomains)')}
+              {hoveredNode.type === 'subdomain' && (hoveredNode.expanded ? ' (Click to Close Members)' : ' (Click to Show Members)')}
             </div>
           </div>
         </div>
