@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
+import TeamNetworkGraph from './TeamNetworkGraph';
 
 interface Member {
   name: string;
@@ -9,6 +10,8 @@ interface Member {
   github: string;
   linkedin: string;
   email: string;
+  skills?: string[];
+  keywords?: string[];
 }
 
 const MEMBERS: Member[] = [
@@ -20,6 +23,8 @@ const MEMBERS: Member[] = [
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
+    skills: ['Presidency', 'Club Strategy', 'Public Speaking', 'Team Coordination'],
+    keywords: ['president', 'leadership', 'strategy', 'planning', 'coordination', 'club', 'srm ist'],
   },
   {
     name: 'Aditya Kumar',
@@ -29,6 +34,8 @@ const MEMBERS: Member[] = [
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
+    skills: ['Web Dev', 'React', 'Node.js', 'Astro', 'Database Architecture'],
+    keywords: ['web dev', 'react', 'astro', 'backend', 'frontend', 'node', 'database', 'api', 'git', 'javascript', 'html', 'css', 'coding', 'website'],
   },
   {
     name: 'Deepika Menon',
@@ -38,6 +45,8 @@ const MEMBERS: Member[] = [
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
+    skills: ['UI/UX Design', 'Figma', 'Graphic Design', 'Video Editing'],
+    keywords: ['design', 'ui/ux', 'figma', 'graphics', 'video editing', 'content', 'photoshop', 'creatives', 'art', 'branding', 'assets', 'logo'],
   },
   {
     name: 'Sneha Patel',
@@ -47,6 +56,8 @@ const MEMBERS: Member[] = [
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
+    skills: ['Event Planning', 'Public Relations', 'Marketing', 'Sponsorships'],
+    keywords: ['operations', 'management', 'events', 'marketing', 'public relations', 'pr', 'sponsors', 'finance', 'budgeting', 'hosting', 'organizing'],
   },
   {
     name: 'Rahul Anand',
@@ -56,16 +67,38 @@ const MEMBERS: Member[] = [
     github: 'https://github.com',
     linkedin: 'https://linkedin.com',
     email: 'mailto:dsc.srmrmp@gmail.com',
+    skills: ['Machine Learning', 'Python', 'TensorFlow', 'Neural Networks'],
+    keywords: ['machine learning', 'ai', 'python', 'tensorflow', 'neural networks', 'data science', 'ml', 'ai agents', 'analytics', 'deep learning'],
   },
+];
+
+const SUGGESTIONS = [
+  { text: 'AI Agent', icon: '🤖' },
+  { text: 'React Web App', icon: '💻' },
+  { text: 'Figma UI Design', icon: '🎨' },
+  { text: 'PR & Event Hosting', icon: '📢' },
+  { text: 'Python Data Model', icon: '🐍' },
 ];
 
 export default function TeamShowcase() {
   const [activeTab, setActiveTab] = useState<'all' | 'technical' | 'creatives' | 'operations'>('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'graph'>('grid');
+  
+  // Predictive search states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [matchedMember, setMatchedMember] = useState<Member | null>(null);
+  const [matchScore, setMatchScore] = useState(0);
+
+  // Selected node profile display inside Graph view
+  const [selectedGraphMember, setSelectedGraphMember] = useState<Member | null>(null);
+
   const cardsRefs = useRef<(HTMLDivElement | null)[]>([]);
   const presidentCardRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (viewMode !== 'grid') return;
+
     // Parallax card tilt on mouse move
     const cards = [...cardsRefs.current, presidentCardRef.current];
     
@@ -80,13 +113,13 @@ export default function TeamShowcase() {
         const xc = rect.width / 2;
         const yc = rect.height / 2;
 
-        const tiltX = (yc - y) / 20; // Decreased sensitivity from 10 to 20 for subtler tilt
+        const tiltX = (yc - y) / 20;
         const tiltY = (x - xc) / 20;
 
         gsap.to(card, {
           rotateX: tiltX,
           rotateY: tiltY,
-          scale: 1.025, // slightly reduced scale scaling
+          scale: 1.025,
           duration: 0.35,
           ease: 'power2.out',
           overwrite: 'auto',
@@ -112,9 +145,11 @@ export default function TeamShowcase() {
         card.removeEventListener('mouseleave', handleMouseLeave);
       };
     });
-  }, [activeTab]);
+  }, [activeTab, viewMode]);
 
   useEffect(() => {
+    if (viewMode !== 'grid') return;
+
     // Staggered 3D reveal entrance animation when tab changes
     if (containerRef.current) {
       const targets = [
@@ -129,7 +164,50 @@ export default function TeamShowcase() {
         { opacity: 1, y: 0, rotateX: 0, scale: 1, duration: 0.65, stagger: 0.07, ease: 'power2.out' }
       );
     }
-  }, [activeTab]);
+  }, [activeTab, viewMode]);
+
+  // Predictive Matching Engine Calculation
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    if (!query.trim()) {
+      setMatchedMember(null);
+      setMatchScore(0);
+      return;
+    }
+
+    const searchWords = query.toLowerCase().split(/\s+/);
+    let bestMatch: Member | null = null;
+    let highestScore = 0;
+
+    MEMBERS.forEach(m => {
+      let score = 0;
+      if (!m.keywords) return;
+
+      searchWords.forEach(word => {
+        // Multi-point match calculation
+        m.keywords!.forEach(kw => {
+          if (kw.includes(word) || word.includes(kw)) {
+            score += 15;
+          }
+        });
+      });
+
+      if (score > highestScore) {
+        highestScore = score;
+        bestMatch = m;
+      }
+    });
+
+    if (bestMatch && highestScore > 0) {
+      // Map score value between 72% and 98%
+      const finalScore = Math.min(72 + highestScore, 98);
+      setMatchedMember(bestMatch);
+      setMatchScore(finalScore);
+    } else {
+      setMatchedMember(null);
+      setMatchScore(0);
+    }
+  };
 
   const president = MEMBERS.find(m => m.domain === 'presidency')!;
   
@@ -143,117 +221,272 @@ export default function TeamShowcase() {
 
   return (
     <div className="team-component-wrapper">
-      {/* Category Navigation Tabs */}
-      <div className="team-filter-tabs">
-        {(['all', 'technical', 'creatives', 'operations'] as const).map(tab => (
-          <button
-            key={tab}
-            className={`team-tab-btn ${activeTab === tab ? 'active' : ''}`}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab}
-          </button>
-        ))}
-      </div>
-
-      <div ref={containerRef} className="team-showcase-container">
-        {/* Centered President Card (only on 'all') */}
-        {showPresident && (
-          <div className="president-row">
-            <div
-              ref={presidentCardRef}
-              className="team-card-wrapper president-card-wrapper"
-            >
-              {/* Brighter dynamic domain glow spotlight behind card */}
-              <div className="card-hover-glow-spotlight spotlight-presidency" />
-              
-              <div className="team-member-card president-member-card">
-                <div className="team-image-container">
-                  <img src={president.image} alt={president.name} className="team-member-image" />
-                  <div className="team-image-overlay" />
-
-                  <div className="team-social-overlay-row">
-                    <a href={president.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                      </svg>
-                    </a>
-                    <a href={president.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                        <rect x="2" y="9" width="4" height="12" />
-                        <circle cx="4" cy="4" r="2" />
-                      </svg>
-                    </a>
-                    <a href={president.email} className="team-social-circle-btn" aria-label="Email">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                      </svg>
-                    </a>
-                  </div>
-                </div>
-
-                <div className="team-member-info">
-                  <h3>{president.name}</h3>
-                  <p className="team-member-role">{president.role}</p>
-                </div>
-              </div>
+      
+      {/* 1. Predictive Networking Engine (Search Console) */}
+      <div className="predictive-engine-box">
+        <div className="engine-header">
+          <span className="engine-prompt-indicator">&gt;_ predictive_match_engine --analyze</span>
+          <h2 className="engine-title">What do you want to build?</h2>
+        </div>
+        
+        <div className="engine-main-row">
+          <div className="engine-input-col">
+            <div className="input-input-wrapper">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => handleSearch(e.target.value)}
+                placeholder="Type your skills, tech stack, or ideas... (e.g. AI bot, Web Portal, Figma Design)"
+                className="engine-search-input"
+              />
+              {searchQuery && (
+                <button className="input-clear-btn" onClick={() => handleSearch('')}>×</button>
+              )}
+            </div>
+            
+            <div className="engine-suggestions-row">
+              <span className="suggestions-label">Try:</span>
+              {SUGGESTIONS.map(s => (
+                <button
+                  key={s.text}
+                  onClick={() => handleSearch(s.text)}
+                  className="suggestion-tag-btn"
+                >
+                  <span className="tag-icon">{s.icon}</span> {s.text}
+                </button>
+              ))}
             </div>
           </div>
-        )}
 
-        {/* Grid of Other Team Members */}
-        <div className="team-showcase-grid">
-          {filteredNonPresidents.map((m, idx) => (
-            <div
-              key={m.name}
-              ref={(el) => { cardsRefs.current[idx] = el; }}
-              className="team-card-wrapper"
-            >
-              {/* Brighter dynamic domain glow spotlight behind card */}
-              <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
-
-              {/* Card Body */}
-              <div className="team-member-card">
-                {/* Image Container */}
-                <div className="team-image-container">
-                  <img src={m.image} alt={m.name} className="team-member-image" />
-                  <div className="team-image-overlay" />
-
-                  {/* Overlay Social Icons Row */}
-                  <div className="team-social-overlay-row">
-                    <a href={m.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
-                      </svg>
-                    </a>
-                    <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                        <rect x="2" y="9" width="4" height="12" />
-                        <circle cx="4" cy="4" r="2" />
-                      </svg>
-                    </a>
-                    <a href={m.email} className="team-social-circle-btn" aria-label="Email">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                        <polyline points="22,6 12,13 2,6" />
-                      </svg>
-                    </a>
+          {/* Results Match recommendation container */}
+          {matchedMember && (
+            <div className="engine-result-card-container">
+              <div className="engine-result-card">
+                <div className="result-score-glow" style={{
+                  color: matchedMember.domain === 'technical' ? '#eab308' :
+                         matchedMember.domain === 'creatives' ? '#c084fc' :
+                         matchedMember.domain === 'operations' ? '#00f2fe' : '#1dd1a1'
+                }}>
+                  {matchScore}% COMPATIBILITY MATCH
+                </div>
+                
+                <div className="result-profile-row">
+                  <img src={matchedMember.image} alt={matchedMember.name} className="result-avatar" />
+                  <div className="result-details">
+                    <h4>{matchedMember.name}</h4>
+                    <p className="result-role">{matchedMember.role}</p>
+                    <div className="result-skills-row">
+                      {matchedMember.skills?.slice(0, 2).map(s => (
+                        <span key={s} className="result-skill-badge">{s}</span>
+                      ))}
+                    </div>
                   </div>
                 </div>
 
-                {/* Info Section */}
-                <div className="team-member-info">
-                  <h3>{m.name}</h3>
-                  <p className="team-member-role">{m.role}</p>
+                <div className="result-actions-row">
+                  <a href={matchedMember.linkedin} target="_blank" rel="noopener noreferrer" className="result-action-btn">
+                    LinkedIn
+                  </a>
+                  <a href={matchedMember.email} className="result-action-btn email-action-btn">
+                    Connect
+                  </a>
                 </div>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
+
+      {/* Toolbar view selectors */}
+      <div className="team-toolbar-controls">
+        <div className="view-mode-toggles">
+          <button
+            className={`toolbar-view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+            onClick={() => setViewMode('grid')}
+          >
+            Grid Cards View
+          </button>
+          <button
+            className={`toolbar-view-btn ${viewMode === 'graph' ? 'active' : ''}`}
+            onClick={() => {
+              setViewMode('graph');
+              setSelectedGraphMember(null);
+            }}
+          >
+            Interactive Graph View
+          </button>
+        </div>
+
+        {/* Display Category Filter tabs only when in Grid View */}
+        {viewMode === 'grid' && (
+          <div className="team-filter-tabs">
+            {(['all', 'technical', 'creatives', 'operations'] as const).map(tab => (
+              <button
+                key={tab}
+                className={`team-tab-btn ${activeTab === tab ? 'active' : ''}`}
+                onClick={() => setActiveTab(tab)}
+              >
+                {tab}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Render selected View Mode content */}
+      {viewMode === 'grid' ? (
+        <div ref={containerRef} className="team-showcase-container">
+          {/* Centered President Card (only on 'all') */}
+          {showPresident && (
+            <div className="president-row">
+              <div
+                ref={presidentCardRef}
+                className="team-card-wrapper president-card-wrapper"
+              >
+                {/* Dynamic domain glow spotlight behind card */}
+                <div className="card-hover-glow-spotlight spotlight-presidency" />
+                
+                <div className="team-member-card president-member-card">
+                  <div className="team-image-container">
+                    <img src={president.image} alt={president.name} className="team-member-image" />
+                    <div className="team-image-overlay" />
+
+                    <div className="team-social-overlay-row">
+                      <a href={president.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                        </svg>
+                      </a>
+                      <a href={president.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                          <rect x="2" y="9" width="4" height="12" />
+                          <circle cx="4" cy="4" r="2" />
+                        </svg>
+                      </a>
+                      <a href={president.email} className="team-social-circle-btn" aria-label="Email">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                          <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+
+                  <div className="team-member-info">
+                    <h3>{president.name}</h3>
+                    <p className="team-member-role">{president.role}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Grid of Other Team Members */}
+          <div className="team-showcase-grid">
+            {filteredNonPresidents.map((m, idx) => (
+              <div
+                key={m.name}
+                ref={(el) => { cardsRefs.current[idx] = el; }}
+                className="team-card-wrapper"
+              >
+                {/* Brighter dynamic domain glow spotlight behind card */}
+                <div className={`card-hover-glow-spotlight spotlight-${m.domain}`} />
+
+                {/* Card Body */}
+                <div className="team-member-card">
+                  {/* Image Container */}
+                  <div className="team-image-container">
+                    <img src={m.image} alt={m.name} className="team-member-image" />
+                    <div className="team-image-overlay" />
+
+                    {/* Overlay Social Icons Row */}
+                    <div className="team-social-overlay-row">
+                      <a href={m.github} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="GitHub">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                        </svg>
+                      </a>
+                      <a href={m.linkedin} target="_blank" rel="noopener noreferrer" className="team-social-circle-btn" aria-label="LinkedIn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                          <rect x="2" y="9" width="4" height="12" />
+                          <circle cx="4" cy="4" r="2" />
+                        </svg>
+                      </a>
+                      <a href={m.email} className="team-social-circle-btn" aria-label="Email">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                          <polyline points="22,6 12,13 2,6" />
+                        </svg>
+                      </a>
+                    </div>
+                  </div>
+
+                  {/* Info Section */}
+                  <div className="team-member-info">
+                    <h3>{m.name}</h3>
+                    <p className="team-member-role">{m.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        /* Render Interactive Network Canvas Graph view */
+        <div className="graph-view-wrapper">
+          <TeamNetworkGraph onSelectMember={(member) => setSelectedGraphMember(member)} />
+
+          {/* Highlight card detail panel when clicking graph node */}
+          {selectedGraphMember ? (
+            <div className="graph-detail-card-panel">
+              <div className="panel-card-inner">
+                <button className="panel-close-btn" onClick={() => setSelectedGraphMember(null)}>×</button>
+                <div className="panel-header-row">
+                  <img src={selectedGraphMember.image} alt={selectedGraphMember.name} className="panel-avatar" />
+                  <div>
+                    <h4>{selectedGraphMember.name}</h4>
+                    <p className="panel-role">{selectedGraphMember.role}</p>
+                  </div>
+                </div>
+                <div className="panel-skills-section">
+                  <h5>Core Skills</h5>
+                  <div className="panel-skills-list">
+                    {selectedGraphMember.skills?.map(s => (
+                      <span key={s} className="panel-skill-pill">{s}</span>
+                    ))}
+                  </div>
+                </div>
+                <div className="panel-actions-row">
+                  <a href={selectedGraphMember.github} target="_blank" rel="noopener noreferrer" className="panel-action-icon" aria-label="GitHub">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22" />
+                    </svg>
+                  </a>
+                  <a href={selectedGraphMember.linkedin} target="_blank" rel="noopener noreferrer" className="panel-action-icon" aria-label="LinkedIn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                      <rect x="2" y="9" width="4" height="12" />
+                      <circle cx="4" cy="4" r="2" />
+                    </svg>
+                  </a>
+                  <a href={selectedGraphMember.email} className="panel-action-icon" aria-label="Email">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+                      <polyline points="22,6 12,13 2,6" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="graph-instructions-card">
+              💡 **Interactive Network Tip:** Click and drag members to fling them! Click **Domain Hubs** (Technical, Creatives, Operations) to expand/collapse their branches, and click a member node to inspect their details.
+            </div>
+          )}
+        </div>
+      )}
       
       <style>{`
         .team-component-wrapper {
@@ -261,31 +494,479 @@ export default function TeamShowcase() {
           display: flex;
           flex-direction: column;
           align-items: center;
+          position: relative;
+          z-index: 10;
         }
 
-        /* Filter Tabs */
+        /* 1. Predictive Networking Engine styling */
+        .predictive-engine-box {
+          width: 100%;
+          background: rgba(17, 23, 20, 0.45);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 28px;
+          margin-bottom: 40px;
+          backdrop-filter: blur(16px);
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.25);
+          text-align: left;
+        }
+
+        .engine-header {
+          margin-bottom: 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding-bottom: 12px;
+        }
+
+        .engine-prompt-indicator {
+          font-family: 'Courier New', Courier, monospace;
+          color: #1dd1a1;
+          font-size: 11px;
+          font-weight: 600;
+          letter-spacing: 0.06em;
+          text-transform: uppercase;
+        }
+
+        .engine-title {
+          font-family: 'Inter', sans-serif;
+          font-size: 1.6rem;
+          font-weight: 500;
+          color: #e8ede9;
+          margin-top: 4px;
+          letter-spacing: -0.02em;
+        }
+
+        .engine-main-row {
+          display: flex;
+          gap: 32px;
+          align-items: stretch;
+          width: 100%;
+        }
+
+        .engine-input-col {
+          flex: 1.3;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+        }
+
+        .input-input-wrapper {
+          position: relative;
+          width: 100%;
+          display: flex;
+          align-items: center;
+        }
+
+        .engine-search-input {
+          width: 100%;
+          background: rgba(8, 13, 11, 0.7);
+          border: 1px solid rgba(255, 255, 255, 0.12);
+          border-radius: 12px;
+          padding: 14px 44px 14px 18px;
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          color: #e8ede9;
+          transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .engine-search-input:focus {
+          outline: none;
+          border-color: #1dd1a1;
+          box-shadow: 0 0 16px rgba(29, 209, 161, 0.15);
+        }
+
+        .input-clear-btn {
+          position: absolute;
+          right: 14px;
+          background: transparent;
+          border: none;
+          color: var(--text-muted);
+          font-size: 20px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+
+        .input-clear-btn:hover {
+          color: #e8ede9;
+        }
+
+        .engine-suggestions-row {
+          display: flex;
+          align-items: center;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 14px;
+        }
+
+        .suggestions-label {
+          font-family: 'Inter', sans-serif;
+          font-size: 11.5px;
+          color: var(--text-muted);
+          margin-right: 6px;
+        }
+
+        .suggestion-tag-btn {
+          background: rgba(232, 237, 233, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 20px;
+          padding: 5px 12px;
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          color: var(--text-muted);
+          cursor: pointer;
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          transition: border-color 0.25s, color 0.25s, background-color 0.25s;
+        }
+
+        .suggestion-tag-btn:hover {
+          border-color: #1dd1a1;
+          color: #e8ede9;
+          background-color: rgba(29, 209, 161, 0.05);
+        }
+
+        /* Results Card */
+        .engine-result-card-container {
+          flex: 1;
+          display: flex;
+          animation: resultSlideIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+
+        .engine-result-card {
+          width: 100%;
+          background: rgba(8, 13, 11, 0.85);
+          border: 1px solid rgba(29, 209, 161, 0.25);
+          border-radius: 14px;
+          padding: 18px;
+          box-shadow: 0 8px 32px rgba(29, 209, 161, 0.08);
+          display: flex;
+          flex-direction: column;
+          justify-content: space-between;
+        }
+
+        .result-score-glow {
+          font-family: 'Inter', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          letter-spacing: 0.08em;
+          text-shadow: 0 0 10px currentColor;
+          margin-bottom: 12px;
+        }
+
+        .result-profile-row {
+          display: flex;
+          gap: 14px;
+          align-items: center;
+          margin-bottom: 16px;
+        }
+
+        .result-avatar {
+          width: 52px;
+          height: 52px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1.5px solid rgba(255, 255, 255, 0.15);
+          background-color: #0b110f;
+        }
+
+        .result-details h4 {
+          font-family: 'Inter', sans-serif;
+          font-size: 14px;
+          font-weight: 600;
+          color: #e8ede9;
+          margin-bottom: 2px;
+        }
+
+        .result-role {
+          font-family: 'Inter', sans-serif;
+          font-size: 10.5px;
+          color: #1dd1a1;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          margin-bottom: 6px;
+        }
+
+        .result-skills-row {
+          display: flex;
+          gap: 6px;
+        }
+
+        .result-skill-badge {
+          font-size: 9px;
+          color: var(--text-muted);
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.06);
+          padding: 2px 6px;
+          border-radius: 4px;
+        }
+
+        .result-actions-row {
+          display: flex;
+          gap: 10px;
+        }
+
+        .result-action-btn {
+          flex: 1;
+          text-align: center;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          color: #e8ede9;
+          font-family: 'Inter', sans-serif;
+          font-size: 11.5px;
+          font-weight: 500;
+          padding: 8px 0;
+          border-radius: 6px;
+          cursor: pointer;
+          text-decoration: none;
+          transition: background-color 0.25s, border-color 0.25s, color 0.25s;
+        }
+
+        .result-action-btn:hover {
+          background: rgba(255, 255, 255, 0.08);
+          border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .email-action-btn {
+          background: #ffffff;
+          color: #080d0b;
+          border: none;
+        }
+
+        .email-action-btn:hover {
+          background: #e8ede9;
+          color: #080d0b;
+        }
+
+        @keyframes resultSlideIn {
+          0% { opacity: 0; transform: translateY(12px) scale(0.98); }
+          100% { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        @media (max-width: 800px) {
+          .engine-main-row {
+            flex-direction: column;
+          }
+          .engine-result-card-container {
+            width: 100%;
+          }
+        }
+
+        /* View Mode Controls Toolbar */
+        .team-toolbar-controls {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          width: 100%;
+          margin-bottom: 32px;
+          gap: 20px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding-bottom: 24px;
+        }
+
+        .view-mode-toggles {
+          display: flex;
+          background: rgba(17, 23, 20, 0.4);
+          padding: 5px;
+          border-radius: 10px;
+          border: 1px solid rgba(232, 237, 233, 0.05);
+          backdrop-filter: blur(10px);
+        }
+
+        .toolbar-view-btn {
+          padding: 8px 16px;
+          font-family: 'Inter', sans-serif;
+          font-size: 12.5px;
+          font-weight: 500;
+          color: var(--text-muted);
+          background: transparent;
+          border: none;
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toolbar-view-btn:hover {
+          color: #e8ede9;
+        }
+
+        .toolbar-view-btn.active {
+          color: #080d0b;
+          background: #ffffff;
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        @media (max-width: 768px) {
+          .team-toolbar-controls {
+            flex-direction: column;
+            align-items: center;
+          }
+        }
+
+        /* 2. Interactive Graph Layout overlays */
+        .graph-view-wrapper {
+          position: relative;
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: stretch;
+        }
+
+        .graph-instructions-card {
+          background: rgba(17, 23, 20, 0.35);
+          border: 1px solid rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 12px 18px;
+          font-family: 'Inter', sans-serif;
+          font-size: 11.5px;
+          color: var(--text-muted);
+          text-align: center;
+          line-height: 1.5;
+        }
+
+        .graph-detail-card-panel {
+          animation: panelSlideIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          width: 100%;
+        }
+
+        .panel-card-inner {
+          background: rgba(8, 13, 11, 0.95);
+          border: 1px solid rgba(29, 209, 161, 0.2);
+          border-radius: 16px;
+          padding: 20px;
+          position: relative;
+          box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+          text-align: left;
+        }
+
+        .panel-close-btn {
+          position: absolute;
+          top: 12px;
+          right: 16px;
+          background: transparent;
+          border: none;
+          color: var(--text-muted);
+          font-size: 24px;
+          cursor: pointer;
+          transition: color 0.2s;
+        }
+
+        .panel-close-btn:hover {
+          color: #e8ede9;
+        }
+
+        .panel-header-row {
+          display: flex;
+          gap: 16px;
+          align-items: center;
+          margin-bottom: 16px;
+          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          padding-bottom: 12px;
+        }
+
+        .panel-avatar {
+          width: 58px;
+          height: 58px;
+          border-radius: 50%;
+          object-fit: cover;
+          border: 1.5px solid rgba(255, 255, 255, 0.15);
+          background-color: #0b110f;
+        }
+
+        .panel-header-row h4 {
+          font-family: 'Inter', sans-serif;
+          font-size: 16px;
+          font-weight: 600;
+          color: #e8ede9;
+          margin-bottom: 3px;
+        }
+
+        .panel-role {
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          color: #1dd1a1;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+        }
+
+        .panel-skills-section h5 {
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          font-weight: 600;
+          color: var(--text-muted);
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          margin-bottom: 8px;
+        }
+
+        .panel-skills-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 18px;
+        }
+
+        .panel-skill-pill {
+          background: rgba(255, 255, 255, 0.04);
+          border: 1px solid rgba(255, 255, 255, 0.08);
+          border-radius: 6px;
+          padding: 4px 10px;
+          font-family: 'Inter', sans-serif;
+          font-size: 11px;
+          color: #e8ede9;
+        }
+
+        .panel-actions-row {
+          display: flex;
+          gap: 12px;
+        }
+
+        .panel-action-icon {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #e8ede9;
+          transition: all 0.25s;
+        }
+
+        .panel-action-icon:hover {
+          border-color: #1dd1a1;
+          color: #1dd1a1;
+          background: rgba(29, 209, 161, 0.08);
+          transform: scale(1.06);
+        }
+
+        @keyframes panelSlideIn {
+          0% { opacity: 0; transform: translateY(8px); }
+          100% { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 3. Grid View elements */
         .team-filter-tabs {
           display: flex;
           justify-content: center;
           gap: 12px;
-          margin-bottom: 48px;
           background: rgba(17, 23, 20, 0.4);
-          padding: 6px;
-          border-radius: 12px;
+          padding: 5px;
+          border-radius: 10px;
           border: 1px solid rgba(232, 237, 233, 0.05);
-          width: fit-content;
           backdrop-filter: blur(10px);
-          z-index: 20;
         }
 
         .team-tab-btn {
           padding: 8px 18px;
-          font-size: 13.5px;
+          font-size: 12.5px;
           font-weight: 500;
           color: var(--text-muted);
           background: transparent;
-          border-radius: 8px;
+          border: none;
+          border-radius: 6px;
           text-transform: capitalize;
+          cursor: pointer;
           transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
 
@@ -296,7 +977,7 @@ export default function TeamShowcase() {
         .team-tab-btn.active {
           color: #080d0b;
           background: #ffffff;
-          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
         /* Team Showcase Layouts */
@@ -328,7 +1009,7 @@ export default function TeamShowcase() {
           }
         }
 
-        /* Team Showcase Grid - 4 columns on large screens */
+        /* Team Showcase Grid */
         .team-showcase-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
@@ -356,10 +1037,6 @@ export default function TeamShowcase() {
             grid-template-columns: 1fr;
             gap: 16px;
           }
-          .team-filter-tabs {
-            flex-wrap: wrap;
-            max-width: 90%;
-          }
         }
 
         .team-card-wrapper {
@@ -368,7 +1045,7 @@ export default function TeamShowcase() {
           perspective: 1000px;
         }
 
-        /* Dynamic Domain Glow Spotlights (Vibrant & highly visible) */
+        /* Dynamic Domain Glow Spotlights */
         .card-hover-glow-spotlight {
           position: absolute;
           inset: -30px;
@@ -383,7 +1060,7 @@ export default function TeamShowcase() {
 
         .team-card-wrapper:hover .card-hover-glow-spotlight,
         .president-card-wrapper:hover .card-hover-glow-spotlight {
-          opacity: 1.0; /* Full opacity on hover */
+          opacity: 1.0;
           transform: scale(1.15) translateZ(-15px);
         }
 
@@ -391,13 +1068,13 @@ export default function TeamShowcase() {
           background: radial-gradient(circle, rgba(29, 209, 161, 0.4) 0%, rgba(29, 209, 161, 0) 70%);
         }
         .spotlight-technical {
-          background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(234, 179, 8, 0) 70%); /* Gold */
+          background: radial-gradient(circle, rgba(234, 179, 8, 0.4) 0%, rgba(234, 179, 8, 0) 70%);
         }
         .spotlight-creatives {
           background: radial-gradient(circle, rgba(168, 85, 247, 0.4) 0%, rgba(168, 85, 247, 0) 70%);
         }
         .spotlight-operations {
-          background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0, 242, 254, 0) 70%); /* Cyan */
+          background: radial-gradient(circle, rgba(0, 242, 254, 0.4) 0%, rgba(0, 242, 254, 0) 70%);
         }
 
         /* The Member Card */
@@ -410,7 +1087,7 @@ export default function TeamShowcase() {
           -webkit-backdrop-filter: blur(20px);
           border: 1px solid rgba(255, 255, 255, 0.08);
           border-radius: 20px;
-          padding: 16px; /* Slightly tighter padding to look clean in smaller sizes */
+          padding: 16px;
           display: flex;
           flex-direction: column;
           align-items: stretch;
@@ -485,7 +1162,7 @@ export default function TeamShowcase() {
         }
 
         .team-social-circle-btn {
-          width: 32px; /* slightly smaller social button to fit card size */
+          width: 32px;
           height: 32px;
           border-radius: 50%;
           background: rgba(17, 23, 20, 0.9);
@@ -514,7 +1191,7 @@ export default function TeamShowcase() {
         .team-member-info h3 {
           font-family: 'Inter', sans-serif;
           font-weight: 500;
-          font-size: 1.1rem; /* slightly smaller header font */
+          font-size: 1.1rem;
           color: var(--text-color);
           margin-bottom: 4px;
           letter-spacing: -0.01em;
@@ -524,7 +1201,7 @@ export default function TeamShowcase() {
         .team-member-role {
           font-family: 'Inter', sans-serif;
           font-weight: 500;
-          font-size: 0.8rem; /* slightly smaller role font */
+          font-size: 0.8rem;
           color: #1dd1a1; /* Neon mint-green */
           text-transform: uppercase;
           letter-spacing: 0.05em;
